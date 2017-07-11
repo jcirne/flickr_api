@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head id="PageHead">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <title>Flickr [api]</title>
+    <link href="https://www.flickr.com/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- jQuery reference. -->
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- Bootstrap reference. -->
+    <!-- http://getbootstrap.com/getting-started/ -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- DataTables reference. -->
+    <!-- https://cdn.datatables.net/ -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- @Styles.Render("~/Content/jqueryui") -->
+    <!-- @Styles.Render("~/Content/bootstrap") -->
+    <!-- @Styles.Render("~/Content/Metro") -->
+    <!-- @Styles.Render("~/Content/chosen") -->
+    <!-- @Styles.Render("~/Content/jquerydatatable") -->
+    <!-- @Styles.Render("~/Content/RDI") -->
+    <!-- @Styles.Render("~/Content/animate.css") -->
+    <!-- @Styles.Render("~/Content/jqPlot") -->
+    <!-- @Styles.Render("~/Content/bootDTPicker") -->
+    <!-- @Scripts.Render("~/bundles/jquery") -->
+    <!-- @Scripts.Render("~/bundles/jqueryui") -->
+    <!-- @Scripts.Render("~/bundles/jqueryForm") -->
+    <!-- @Scripts.Render("~/bundles/chosen") -->
+    <!-- @Scripts.Render("~/bundles/bootstrap") -->
+    <!-- @Scripts.Render("~/bundles/jqueryval") -->
+    <!-- @Scripts.Render("~/bundles/jquerydatatable") -->
+    <!-- @Scripts.Render("~/bundles/Metro") -->
+    <!-- @Scripts.Render("~/bundles/blockUI") -->
+    <!-- @Scripts.Render("~/bundles/RDI") -->
+    <!-- @Scripts.Render("~/bundles/dropdownMenu") -->
+    <!-- @Scripts.Render("~/bundles/noty") -->
+    <!-- @Scripts.Render("~/bundles/jqPlot") -->
+    <!-- @Scripts.Render("~/bundles/jqPlotPlugins") -->
+    <!-- @Scripts.Render("~/bundles/bootDTPicker") -->
+    <!-- @Scripts.Render("~/bundles/bootDTPickerLocales") -->
+    <!-- <script src="~/Scripts/jquery.validate.js"></script> -->
+    <!-- <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script> -->
+    <!-- <script src="~/Scripts/CustomDataAnnotationClientSide.js"></script> -->
+    <!-- <script src="~/Scripts/jquery.tabs.extensions.js"></script> -->
+
+
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- All the page specific scripts -->
+    <script type="text/javascript">
+        var fFilter = "",
+            iTriggerAbout = 0;
+
+        $(function () {
+            'use strict';
+
+            //fnStartPage();
+
+            // Esc and Enter keys prevention
+            //$(document).keydown(function (event) {
+            //    if (event.keyCode == 27 || event.keyCode == 13) {
+            //        event.preventDefault();
+            //        event.stopImmediatePropagation();
+            //    }
+            //});
+
+            //fnInitSignalR();
+
+            // Window resize
+            $(window).resize(function () {
+                if ($('#divAbout:visible').length != 0) {
+                    hideAbout(true);
+                    iTriggerAbout = 1;
+                }
+                if (iTriggerAbout > 0) {
+                    iTriggerAbout++;
+                    setTimeout(function() {
+                        iTriggerAbout--;
+                        if (iTriggerAbout === 1) {
+                            showAbout();
+                            iTriggerAbout = 0;
+                        }
+                    });
+                }
+            });
+
+
+            getInterestingness();
+        })
+
+
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+        // flickr api methods
+
+        // Get Interestingness with default parameters
+        //
+        // api_key (Necessário)
+        //      Your API application key. See here for more details.
+        // date (Opcional)
+        //      A specific date, formatted as YYYY-MM-DD, to return interesting photos for.
+        // extras (Opcional)
+        //      A comma-delimited list of extra information to fetch for each returned record. Currently supported fields are: description, license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo, tags, machine_tags, o_dims, views, media, path_alias, url_sq, url_t, url_s, url_q, url_m, url_n, url_z, url_c, url_l, url_o
+        // per_page (Opcional)
+        //      Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+        // page (Opcional)
+        //      The page of results to return. If this argument is omitted, it defaults to 1.
+        function getInterestingness() {
+            'use strict';
+
+            $.ajax({
+                url: 'https://api.flickr.com/services/rest/',
+                data: {
+                    method: 'flickr.interestingness.getList',
+                    api_key: '3e1dd5433dff3783aa605af9e23548f1',
+                    format: 'json',
+                    nojsoncallback: 1
+                },
+                type: 'GET',
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    actInterestingness(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        }
+
+        // Called after get action on Interestingness with default parameters
+        //
+        // Inputs: "data"
+        // {   "photos": {
+        //         "page": 1,
+        //         "pages": 5,
+        //         "perpage": 100,
+        //         "total": "500", 
+        //         "photo": [
+        //             { "id": "34678336434", "owner": "46170864@N02", "secret": "8100d485b4", "server": "4288", "farm": 5, "title": "Ridiculous", "ispublic": 1, "isfriend": 0, "isfamily": 0 },
+        //                 ...
+        //             { "id": "35520667645", "owner": "78529489@N04", "secret": "4bf5b2b881", "server": "4216", "farm": 5, "title": "Lake Camp reflections, Canterbury New Zealand", "ispublic": 1, "isfriend": 0, "isfamily": 0 }
+        //         ] },
+        //     "stat": "ok" }
+        function actInterestingness(data) {
+            'use strict';
+            
+            if (data.stat === "ok") {
+                $.each(data.photos.photo, function (i, item) {
+                    $("<img>")
+                        .attr("src", "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + "_m.jpg")
+                        .attr("title", item.title)
+                        .appendTo("#images");
+                    if (i === 4) {
+                        return false;
+                    }
+                });
+            }
+        }
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+        
+
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+        function stringifyFilter() {
+            'use strict';
+
+            //return JSON.stringify($('#formCriteriosPesquisa').serializeArray());
+            //return $('#formFilter').serialize();
+            return "";
+        }
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+        // UI methods
+
+        function showCriteriosPesquisa() {
+            'use strict';
+            var divX = 20,
+                divWidth = $(document).width() - 40;
+
+            //hideDetalhe();
+            $('#trCriteriosPesquisa').removeClass('element_with_changes');
+            $('#divCriteriosPesquisa').css('left', divX).css('width', divWidth).slideDown();
+            $('#PesquisaIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
+            $('#PesquisaLink').attr('title', 'Esconde Critérios de Pesquisa');
+            $('#clearButtonID').fadeIn();
+        }
+
+        function hideCriteriosPesquisa() {
+            'use strict';
+
+            $('#divCriteriosPesquisa').slideUp();
+            $('#PesquisaIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
+            $('#PesquisaLink').attr('title', 'Mostra Critérios de Pesquisa');
+            $('#clearButtonID').fadeOut();
+            if (stringifyFilter() !== filter) {
+                $('#trCriteriosPesquisa').addClass('element_with_changes');
+            }
+            else {
+                $('#trCriteriosPesquisa').removeClass('element_with_changes');
+            }
+            $(document).trigger('mouseup'); // Fecha evetuais "MultipleSelect"s
+        }
+
+        function toggleFilter() {
+            'use strict';
+
+            if ($('#divCriteriosPesquisa:visible').length != 0) {
+                hideCriteriosPesquisa();
+            }
+            else {
+                showCriteriosPesquisa();
+            }
+        }
+
+        function showAbout() {
+            'use strict';
+            
+            if ($('#divAbout:visible').length === 0) {
+                var divX = 200,
+                    divY = (divX / 2),
+                    divWidth = $(document).width() - (divX * 2);
+
+                $('#divAboutProtector').css('left', 0).css('top', 0).css('width', $(document).width()).css('height', $(document).height()).fadeIn();
+                $('#divAbout').css('left', divX).css('top', divY).css('width', divWidth).slideDown();
+            }
+
+            return false;
+        }
+
+        function hideAbout(bInstant) {
+            'use strict';
+            
+            if (bInstant) {
+                $('#divAbout,#divAboutProtector').hide();
+            }
+            else {
+                $('#divAbout').slideUp();
+                $('#divAboutProtector').fadeOut();
+            }
+
+            return false;
+        }
+
+
+        function detachLink(sLink) {
+            'use strict';
+
+            setTimeout(function () {
+                window.open(sLink, '_blank');
+            }, 500);
+        }
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+    </script>
+</head>
+
+<!-- <body onunload="fnEndPage()" onresize="fnBodyResize()" onselectstart="return true"> -->
+<body>
+    <div id="content">
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Title and filter control -->
+        <div>
+            <table class="display dataTable" border="0">
+                <thead>
+                    <tr>
+                        <th style="width:15px;" class="text-left"></th>
+                        <th id="thNavegacaoActual" style="width:100%;"><span style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">Flickr [api]</span></th>
+                        <th style="width:15px;" class="text-right">
+                            <a href="#" onclick="showAbout();" title="About Flickr[api]"><span class="glyphicon glyphicon-question-sign"></span></a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="trCriteriosPesquisa">
+                        <td id="PesquisaLink" title="Mostra Critérios de Pesquisa" onclick="toggleFilter();">
+                            <a href="#"><span id="PesquisaIcon" class="glyphicon glyphicon-chevron-right" style="padding-top: 0.1em;"></span></a>
+                        </td>
+                        <td colspan="2">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group" ondblclick="toggleFilter();" style="padding-top: 0.5em; padding-right: 0.5em;">
+                                        <label>Critérios de Pesquisa</label>
+                                        <div class="pull-right">
+                                            <button id="clearButtonID" onclick="limparCriteriosPesquisa(); return false;" title="Limpar Critérios de Pesquisa" style="display: none;"><span class="glyphicon glyphicon-erase"></span>&nbsp;Limpar</button>
+                                            <button id="searchButtonID" onclick="hideCriteriosPesquisa(); pesquisar(); return false;" title="Pesquisar"><span class="glyphicon glyphicon-search"></span>&nbsp;Pesquisar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="images">
+
+        </div>
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Filter -->
+        <div id="divCriteriosPesquisa" style="display: none; position: absolute; z-index: 2; background-color: rgba(245, 245, 245, 0.9); border: 1px solid rgb(170, 170, 170);">
+            <form id="formCriteriosPesquisa">
+                <div class="row" id="PesquisaCritClas" style="padding-top: 1.5em; padding-bottom: 0.5em;">
+                    <div class="form-horizontal">
+                        <div id="divColunaPesquisa1" class="col-sm-5">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Rede:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.RedeID, Model.Redes)
+                                </div>
+
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-2">
+                                    <a id="checkNivel" href="#" onclick="toggleNivelID('Nivel');"><span class="glyphicon glyphicon-check" style="padding-top: 0.1em; padding-left: 1em;"></span></a>
+                                    <label class="control-label pull-right filtro-por-nivel">Nível:</label>
+                                </div>
+                                <div class="col-sm-3 filtro-por-nivel">
+                                    @Html.DropDownListFor(m => m.NivelID, Model.Niveis)
+                                </div>
+                                <div class="col-sm-4 filtro-por-nivel">
+                                    @Html.DropDownListFor(m => m.Orgao, Model.Orgaos)
+                                </div>
+
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-2">
+                                    <a id="checkID" href="#" onclick="toggleNivelID('ID');"><span class="glyphicon glyphicon-check" style="padding-top: 0.1em; padding-left: 1em;"></span></a>
+                                    <label class="control-label pull-right filtro-por-id">Por ID:</label>
+                                </div>
+                                <div class="col-sm-4 filtro-por-id">
+                                    @Html.DropDownListFor(m => m.TipoIDPesquisa, Model.TiposIDsPesquisa)
+                                </div>
+                                <div class="col-sm-3 filtro-por-id" style="top: 2px;">
+                                    @Html.TextBoxFor(m => m.IDPesquisa, new { @class = "form-control", maxlength = "10", type = "number" })
+                                </div>
+                            </div>
+                            <div class="input-produtos">
+                                @Html.EditorFor(m => m.MultiProdutos, "MultipleSelect")
+                            </div>
+                            <div class="form-group input-produtos">
+                                <label class="col-sm-3 control-label">Produtos:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.Produto, Model.Produtos)
+                                </div>
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">Situação:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.Situacao, Model.Situacoes)
+                                </div>
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">Limites Crédito:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.LimiteCredito, Model.LimitesCredito)
+                                </div>
+                            </div>
+                            <div class="input-outros">
+                                @Html.EditorFor(m => m.TaxaDevedora, "IntervaloNumerico")
+                            </div>
+                            <div class="input-outros">
+                                @Html.EditorFor(m => m.Montantes, "IntervaloMontantes")
+                            </div>
+                            <div class="input-outros">
+                                @Html.EditorFor(m => m.NumDias, "IntervaloNumerico")
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">Comentários:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.Comentario, Model.Comentarios)
+                                </div>
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">Garantias:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.Garantia, Model.Garantias)
+                                </div>
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">Segmento:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.Segmento, Model.Segmentos)
+                                </div>
+                            </div>
+                            <div class="form-group input-outros">
+                                <label class="col-sm-3 control-label">PERSI:</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownListFor(m => m.PERSI, Model.PERSIs)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"></div>
+                        <div id="divColunaPesquisa2" class="col-sm-5">
+                        </div>
+                        <div class="col-sm-1"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image table -->
+        <div id="divResultsTable" style="display: none; padding-top:1em;">
+        </div>
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image detail -->
+        <div id="divDetalheProtector" style="display: none; position: absolute; z-index: 1; background-color: rgba(255, 255, 255, 0.8);">
+            <div id="divDetalhe" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group" style="padding-top: 0.5em; padding-right: 0.5em;">
+                            <label style="padding-left: 20px; font: bold 12pt/normal Arial; color: rgb(255, 96, 0); font-size-adjust: none; font-stretch: normal;">Detalhe</label>
+                            <div class="pull-right" onclick="hideDetalhe();" style="padding-right: 20px;">
+                                <a href="#" title="Fechar detalhe"><span id="FecharIcon" class="glyphicon glyphicon-off"></span></a>
+                            </div>
+                            <div class="pull-right" onclick="detachDetalhe();" style="padding-right: 20px;">
+                                <a href="#" title="Abrir num novo separador"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divDadosDetalhe">
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- About -->
+        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 1; background-color: rgba(255, 255, 255, 0.8);">
+            <div id="divAbout" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group" style="padding-top: 1em; padding-right: 0.5em;">
+                            <label style="padding-left: 20px; font: bold 12pt/normal Arial;">About</label>
+                            <div class="pull-right" onclick="hideAbout();" style="padding-right: 20px;">
+                                <a href="#" title="Close"><span class="glyphicon glyphicon-off"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divAboutInfo">
+                    <div class="col-sm-12">
+                        <div class="form-group" style="padding-top: 0.5em; padding-right: 0.5em;">
+                            <label class="control-label">flickr api</label>
+                            <div class="pull-right" onclick="detachLink('https://www.flickr.com/services/api/');" style="padding-right: 20px;">
+                                <a href="#" title="Abrir num novo separador"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
