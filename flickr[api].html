@@ -48,6 +48,7 @@
             $(document).keydown(function (event) {
                 if (event.keyCode === 27) {
                     hideAbout();
+                    hideDetail();
                 }
                 // if (event.keyCode === 13) {
                 //    event.preventDefault();
@@ -57,6 +58,7 @@
 
             // Window resize
             $(window).resize(function () {
+                hideDetail(true);
                 if ($('#divAbout:visible').length != 0) {
                     hideAbout(true);
                     iTriggerAbout = 1;
@@ -138,8 +140,10 @@
                     $("<img>")
                         .attr("src", "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + "_m.jpg")
                         .attr("title", item.title)
+                        .attr("style", "padding-left: 1em; padding-top: 1em;")
+                        .attr("onclick", "showDetail('" + "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + "_b.jpg" + "', '" + item.title + "')")
                         .appendTo("#images");
-                    if (i === 4) {
+                    if (i === 15) {
                         return false;
                     }
                 });
@@ -172,7 +176,7 @@
             var divX = 20,
                 divWidth = $(document).width() - 40;
 
-            //hideDetalhe();
+            //hideDetail();
             $('#trCriteriosPesquisa').removeClass('element_with_changes');
             $('#divCriteriosPesquisa').css('left', divX).css('width', divWidth).slideDown();
             $('#PesquisaIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
@@ -207,6 +211,34 @@
             }
         }
 
+
+
+        function showDetail(sImgURL, sImgTitle) {
+            'use strict';
+
+            $('#labelDetailTitle').text(sImgTitle);
+            $('#imgDetail').attr("src", sImgURL).attr("title", sImgTitle);
+
+            $('#divDetail').fadeIn();
+
+            return false;
+        }
+
+        function hideDetail(bInstant) {
+            'use strict';
+            
+            if (bInstant) {
+                $('#divDetail').hide();
+            }
+            else {
+                $('#divDetail').fadeOut();
+            }
+
+            return false;
+        }
+
+
+
         function showAbout() {
             'use strict';
             
@@ -237,6 +269,7 @@
 
             return false;
         }
+
 
 
         function detachLink(sLink) {
@@ -401,24 +434,24 @@
         <div id="divResultsTable" style="display: none; padding-top:1em;">
         </div>
 
+
+
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Image detail -->
-        <div id="divDetalheProtector" style="display: none; position: absolute; z-index: 1; background-color: rgba(255, 255, 255, 0.8);">
-            <div id="divDetalhe" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group" style="padding-top: 0.5em; padding-right: 0.5em;">
-                            <label style="padding-left: 20px; font: bold 12pt/normal Arial; color: rgb(255, 96, 0); font-size-adjust: none; font-stretch: normal;">Detalhe</label>
-                            <div class="pull-right" onclick="hideDetalhe();" style="padding-right: 20px;">
-                                <a href="#" title="Fechar detalhe"><span id="FecharIcon" class="glyphicon glyphicon-off"></span></a>
-                            </div>
-                            <div class="pull-right" onclick="detachDetalhe();" style="padding-right: 20px;">
-                                <a href="#" title="Abrir num novo separador"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
-                            </div>
+        <div id="divDetail" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+            <div class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label id="labelDetailTitle" style="font: bold 12pt/normal Arial;"></label>
+                        <div class="pull-right" onclick="hideDetail();">
+                            <a href="#" title="Close"><span class="glyphicon glyphicon-off"></span></a>
                         </div>
                     </div>
                 </div>
-                <div class="row" id="divDadosDetalhe">
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <img id="imgDetail" style="padding-left: 10px; padding-right: 10px; padding-bottom: 10px;"></img>
                 </div>
             </div>
         </div>
@@ -427,7 +460,7 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- About -->
-        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 1; background-color: rgba(255, 255, 255, 0.8);">
+        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 2; background-color: rgba(255, 255, 255, 0.8);">
             <div id="divAbout" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
                 <div class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
                     <div class="col-sm-12">
