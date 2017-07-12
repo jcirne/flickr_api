@@ -44,17 +44,16 @@
         $(function () {
             'use strict';
 
-            //fnStartPage();
-
-            // Esc and Enter keys prevention
-            //$(document).keydown(function (event) {
-            //    if (event.keyCode == 27 || event.keyCode == 13) {
-            //        event.preventDefault();
-            //        event.stopImmediatePropagation();
-            //    }
-            //});
-
-            //fnInitSignalR();
+            // Esc and Enter keys
+            $(document).keydown(function (event) {
+                if (event.keyCode === 27) {
+                    hideAbout();
+                }
+                // if (event.keyCode === 13) {
+                //    event.preventDefault();
+                //    event.stopImmediatePropagation();
+                // }
+            });
 
             // Window resize
             $(window).resize(function () {
@@ -457,7 +456,7 @@
                     <div class="col-sm-1" onclick="detachLink('https://jquery.com/');">
                         <a href="#" title="Open jQuery website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <label class="control-label">jQuery &nbsp; [3.2.1]</label>
                     </div>
                 </div>
@@ -466,7 +465,7 @@
                     <div class="col-sm-1" onclick="detachLink('http://getbootstrap.com/');">
                         <a href="#" title="Open Bootstrap website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <label class="control-label">Bootstrap &nbsp; [3.3.7]</label>
                     </div>
                 </div>
@@ -475,16 +474,16 @@
                     <div class="col-sm-1" onclick="detachLink('https://datatables.net/');">
                         <a href="#" title="Open Datatables website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <label class="control-label">Datatables &nbsp; [1.10.15]</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-1" onclick="detachLink('https://harvesthq.github.io/chosen/');">
-                        <a href="#" title="Open Datatables website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                        <a href="#" title="Open Chosen website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <label class="control-label">Choosen &nbsp; [1.7.0]</label>
                     </div>
                 </div>
@@ -493,7 +492,7 @@
                     <div class="col-sm-1" onclick="detachLink('https://www.flickr.com/services/api/');">
                         <a href="#" title="Open flickr App Garden website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <label class="control-label">flickr App Garden</label>
                     </div>
                 </div>
