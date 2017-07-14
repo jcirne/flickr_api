@@ -57,6 +57,7 @@
                 if (event.keyCode === 27) {
                     hideAbout();
                     hideDetail();
+                    $('html,body').css('cursor', 'default');
                 }
                 // if (event.keyCode === 13) {
                 //    event.preventDefault();
@@ -86,7 +87,6 @@
             // Set detail mousewheel behaviour
             $('#divDetail').bind('mousewheel', function (e) {
                 changeDetail(e.originalEvent.wheelDelta / 120 > 0);
-                $('html,body').css('cursor', 'wait');
             });
 
             // Set image load behaviour
@@ -156,13 +156,17 @@
         function actInterestingness(data) {
             if (data.stat === "ok") {
                 $.each(data.photos.photo, function (i, item) {
+                    var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
+
                     $("<img>")
-                        .attr("src", "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + "_m.jpg")
+                        .attr("id", i)
+                        .attr("src", sSimpleURL + "_m.jpg")
+                        .attr("data-simple-url", sSimpleURL)
                         .attr("title", item.title)
                         .attr("style", "padding-left: 1em; padding-top: 1em;")
-                        .attr("onclick", "showDetail('" + "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + "', '" + item.title + "')")
+                        .attr("onclick", "showDetail('" + i + "');")
                         .appendTo("#images");
-                    if (i === 15) {
+                    if (i === 13) {
                         return false;
                     }
                 });
@@ -201,6 +205,7 @@
         }
 
         function hideCriteriosPesquisa() {
+
             $('#divCriteriosPesquisa').slideUp();
             $('#PesquisaIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
             $('#PesquisaLink').attr('title', 'Mostra Critérios de Pesquisa');
@@ -215,6 +220,7 @@
         }
 
         function toggleFilter() {
+
             if ($('#divCriteriosPesquisa:visible').length != 0) {
                 hideCriteriosPesquisa();
             }
@@ -225,11 +231,9 @@
 
 
 
-        function changeDetail(bUp) {
-            // Only allow 4 sizes, even though there could be more...
-            iDetailSize = bUp ? Math.min(iDetailSize + 1, 5) : Math.max(iDetailSize - 1, 2);
+        function setDetail(iSet) {
 
-            switch (iDetailSize) {
+            switch (iSet) {
                 case 1:
                     $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
                     break;
@@ -249,20 +253,35 @@
                     $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
                     break;
             }
+        }
+
+        function changeDetail(bUp) {
+            // Only allow 4 sizes, even though there could be more...
+            var iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 5) : Math.max(iDetailSize - 1, 2);
+
+            if (iNewDetailSize != iDetailSize) {
+                $('html,body').css('cursor', 'wait');
+                iDetailSize = iNewDetailSize;
+            }
+            setDetail(iDetailSize);
 
             return false;
         }
 
-        function showDetail(sImgSimpleURL, sImgTitle) {
-            $('#labelDetailTitle').text(sImgTitle);
-            $('#imgDetail').attr("data-simple-url", sImgSimpleURL).attr("title", sImgTitle);
-            changeDetail(false);
+        function showDetail(sIndex) {
+            
+            $('html,body').css('cursor', 'wait');
+            $('#labelDetailTitle').text($('img#' + sIndex).attr("title"));
+            $('#imgDetail').attr("data-simple-url", $('img#' + sIndex).attr("data-simple-url")).attr("title", $('img#' + sIndex).attr("title"));
+            setDetail(iDetailSize);
+
             $('#divDetail').fadeIn();
 
             return false;
         }
 
         function hideDetail(bInstant) {
+
             if (bInstant) {
                 $('#divDetail').hide();
             }
@@ -276,6 +295,7 @@
 
 
         function showAbout() {
+
             if ($('#divAbout:visible').length === 0) {
                 var docWidth = $(document).width(),
                     divWidth = Math.min(400, docWidth),
@@ -291,6 +311,7 @@
         }
 
         function hideAbout(bInstant) {
+
             if (bInstant) {
                 $('#divAbout,#divAboutProtector').hide();
             }
@@ -305,6 +326,7 @@
 
 
         function detachLink(sLink) {
+
             setTimeout(function () {
                 window.open(sLink, '_blank');
             }, 500);
