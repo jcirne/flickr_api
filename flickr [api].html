@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
 
-    <title>Flickr [api]</title>
+    <title>flickr [api]</title>
     <link href="https://www.flickr.com/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
     <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
@@ -51,6 +51,7 @@
             iTriggerAbout = 0,
             iDetailSize = 4;
 
+        // Initial settings
         $(function () {
             // Esc and Enter keys
             $(document).keydown(function (event) {
@@ -160,7 +161,7 @@
 
                     $("<img>")
                         .attr("id", i)
-                        .attr("src", sSimpleURL + "_m.jpg")
+                        .attr("src", sSimpleURL + "_q.jpg")
                         .attr("data-simple-url", sSimpleURL)
                         .attr("title", item.title)
                         .attr("style", "padding-left: 1em; padding-top: 1em;")
@@ -346,7 +347,7 @@
                 <thead>
                     <tr>
                         <th style="width:15px;" class="text-left"></th>
-                        <th id="thNavegacaoActual" style="width:100%;"><span style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">Flickr [api]</span></th>
+                        <th id="thNavegacaoActual" style="width:100%;"><span style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">flickr [api]</span></th>
                         <th style="width:15px;" class="text-right">
                             <a href="#" onclick="showAbout();" title="About Flickr[api]"><span class="glyphicon glyphicon-question-sign"></span></a>
                         </th>
