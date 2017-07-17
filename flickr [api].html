@@ -58,6 +58,7 @@
                 if (event.keyCode === 27) {
                     hideAbout();
                     hideDetail();
+                    hideFilter();
                     $('html,body').css('cursor', 'default');
                 }
                 // if (event.keyCode === 13) {
@@ -83,10 +84,23 @@
                         }
                     });
                 }
+                if ($('#divFilter:visible').length != 0) {
+                    hideFilter(true);
+                    setTimeout(showFilter, 500);
+                }
+            });
+
+            // Chosen
+            $('#selectStream').chosen({
+                search_contains: true,
+                allow_single_deselect: true,
+                width: '180px'
+            }).change(function () {
+                getStream($('#selectStream').val());
             });
 
             // Set detail mousewheel behaviour
-            $('#divDetail').bind('mousewheel', function (e) {
+            $('#divDetail').bind('mousewheel DOMMouseScroll', function (e) {
                 changeDetail(e.originalEvent.wheelDelta / 120 > 0);
             });
 
@@ -100,7 +114,7 @@
             $('#divAbout').draggable({ handle: '#divAboutHead' });
 
             // Get initial stream
-            getInterestingness();
+            getStream($('#selectStream').val());
         })
 
 
@@ -108,7 +122,7 @@
         // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
         // flickr api methods
 
-        // Get Interestingness with default parameters
+        // Get stream with default parameters
         //
         // api_key (Necessário)
         //      Your API application key. See here for more details.
@@ -120,11 +134,11 @@
         //      Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
         // page (Opcional)
         //      The page of results to return. If this argument is omitted, it defaults to 1.
-        function getInterestingness() {
+        function getStream(sStream) {
             $.ajax({
                 url: 'https://api.flickr.com/services/rest/',
                 data: {
-                    method: 'flickr.interestingness.getList',
+                    method: sStream,
                     api_key: '3e1dd5433dff3783aa605af9e23548f1',
                     format: 'json',
                     nojsoncallback: 1
@@ -132,7 +146,7 @@
                 type: 'GET',
                 cache: false,
                 success: function (data, textStatus, jqXHR) {
-                    actInterestingness(data);
+                    actStream(data);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -140,7 +154,7 @@
             });
         }
 
-        // Called after get action on Interestingness with default parameters
+        // Called after get action on stream with default parameters
         //
         // Inputs: "data"
         // {   "photos": {
@@ -154,7 +168,7 @@
         //             { "id": "35520667645", "owner": "78529489@N04", "secret": "4bf5b2b881", "server": "4216", "farm": 5, "title": "Lake Camp reflections, Canterbury New Zealand", "ispublic": 1, "isfriend": 0, "isfamily": 0 }
         //         ] },
         //     "stat": "ok" }
-        function actInterestingness(data) {
+        function actStream(data) {
             if (data.stat === "ok") {
                 $.each(data.photos.photo, function (i, item) {
                     var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
@@ -181,7 +195,7 @@
         // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
         function stringifyFilter() {
-            //return JSON.stringify($('#formCriteriosPesquisa').serializeArray());
+            //return JSON.stringify($('#formFilter').serializeArray());
             //return $('#formFilter').serialize();
             return "";
         }
@@ -193,40 +207,38 @@
         // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
         // UI methods
 
-        function showCriteriosPesquisa() {
-            var divX = 20,
-                divWidth = $(document).width() - 40;
+        function showFilter() {
 
-            //hideDetail();
-            $('#trCriteriosPesquisa').removeClass('element_with_changes');
-            $('#divCriteriosPesquisa').css('left', divX).css('width', divWidth).slideDown();
-            $('#PesquisaIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
-            $('#PesquisaLink').attr('title', 'Esconde Critérios de Pesquisa');
-            $('#clearButtonID').fadeIn();
+            hideDetail();
+            $('#trFilter').removeClass('element_with_changes');
+            $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown();
+            $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
         }
 
-        function hideCriteriosPesquisa() {
+        function hideFilter(bInstant) {
 
-            $('#divCriteriosPesquisa').slideUp();
-            $('#PesquisaIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
-            $('#PesquisaLink').attr('title', 'Mostra Critérios de Pesquisa');
-            $('#clearButtonID').fadeOut();
-            if (stringifyFilter() !== filter) {
-                $('#trCriteriosPesquisa').addClass('element_with_changes');
+            if (bInstant) {
+                $('#divFilter').hide();
             }
             else {
-                $('#trCriteriosPesquisa').removeClass('element_with_changes');
+                $('#divFilter').slideUp();
             }
-            $(document).trigger('mouseup'); // Fecha evetuais "MultipleSelect"s
+            $('#spanFilterIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
+            if (stringifyFilter() !== filter) {
+                $('#trFilter').addClass('element_with_changes');
+            }
+            else {
+                $('#trFilter').removeClass('element_with_changes');
+            }
         }
 
         function toggleFilter() {
 
-            if ($('#divCriteriosPesquisa:visible').length != 0) {
-                hideCriteriosPesquisa();
+            if ($('#divFilter:visible').length != 0) {
+                hideFilter();
             }
             else {
-                showCriteriosPesquisa();
+                showFilter();
             }
         }
 
@@ -340,81 +352,57 @@
 
 <body>
     <div id="content">
+
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Title and filter control -->
         <div>
-            <table class="display dataTable" border="0">
-                <thead>
-                    <tr>
-                        <th style="width:15px;" class="text-left"></th>
-                        <th id="thNavegacaoActual" style="width:100%;"><span style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">flickr [api]</span></th>
-                        <th style="width:15px;" class="text-right">
-                            <a href="#" onclick="showAbout();" title="About Flickr[api]"><span class="glyphicon glyphicon-question-sign"></span></a>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="trCriteriosPesquisa">
-                        <td id="PesquisaLink" title="Toggle stream filter" onclick="toggleFilter();">
-                            <a href="#"><span id="PesquisaIcon" class="glyphicon glyphicon-chevron-right" style="padding-top: 0.1em;"></span></a>
-                        </td>
-                        <td colspan="2">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group" ondblclick="toggleFilter();" style="padding-top: 0.5em; padding-right: 0.5em;">
-                                        <h4>Stream Filter</h4>
-                                        <!-- <div class="pull-right">
-                                            <button id="clearButtonID" onclick="limparCriteriosPesquisa(); return false;" title="Limpar Critérios de Pesquisa" style="display: none;"><span class="glyphicon glyphicon-erase"></span>&nbsp;Limpar</button>
-                                            <button id="searchButtonID" onclick="hideCriteriosPesquisa(); pesquisar(); return false;" title="Pesquisar"><span class="glyphicon glyphicon-search"></span>&nbsp;Pesquisar</button>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="row" style="padding-top: 10px; padding-bottom: 5px; padding-left: 80px; padding-right: 15px; border-bottom:1px solid darkorange;">
+                <div class="col-sm-12">
+                    <label style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">flickr [api]</label>
+                    <div class="pull-right" onclick="showAbout();" title="About Flickr[api]">
+                        <a href="#" onclick="showAbout();"><span class="glyphicon glyphicon-question-sign" style="padding-top: 5px;"></span></a>
+                        <label class="control-label">&nbsp; About &nbsp;</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 20px;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <a href="#" >
+                            <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Toggle stream filter" onclick="toggleFilter();" style="padding-left: 10px; padding-right: 10px;"></span>
+                        </a>
+                        <label class="control-label" style="padding-right: 10px;">Stream:</label>
+                        <select id="selectStream" class="simple-select">
+                            <option value="flickr.interestingness.getList">Interesting Photos</option>
+                            <option value="flickr.photos.getPopular">Popular Photos</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
 
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image stream -->
         <div id="images">
-
         </div>
+
+
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Filter -->
-        <div id="divCriteriosPesquisa" style="display: none; position: absolute; z-index: 2; background-color: rgba(245, 245, 245, 0.9); border: 1px solid rgb(170, 170, 170);">
-            <form id="formCriteriosPesquisa">
-                <div class="row" id="PesquisaCritClas" style="padding-top: 1.5em; padding-bottom: 0.5em;">
-                    <div class="form-horizontal">
-                        <div id="divColunaPesquisa1" class="col-sm-5">
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Rede:</label>
-                                <div class="col-sm-9">
-                                    @Html.DropDownListFor(m => m.RedeID, Model.Redes)
-                                </div>
-
-                                <div class="col-sm-3"></div>
-                                <div class="col-sm-2">
-                                    <a id="checkID" href="#" onclick="toggleNivelID('ID');"><span class="glyphicon glyphicon-check" style="padding-top: 0.1em; padding-left: 1em;"></span></a>
-                                    <label class="control-label pull-right filtro-por-id">Por ID:</label>
-                                </div>
-                                <div class="col-sm-3 filtro-por-id" style="top: 2px;">
-                                    @Html.TextBoxFor(m => m.IDPesquisa, new { @class = "form-control", maxlength = "10", type = "number" })
-                                </div>
+        <div id="divFilter" style="display: none; position: absolute; z-index: 1; background-color: rgba(245, 245, 245, 0.9); border: 1px solid rgb(170, 170, 170); padding-top: 1.5em; padding-bottom: 0.5em;">
+            <form id="formFilter">
+                <div class="row" style="padding-top: 1.5em; padding-bottom: 0.5em;">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div id="divStreamTable" style="display: none; padding-top:1em;">
                             </div>
                         </div>
-                        <div class="col-sm-1"></div>
-                        <div id="divColunaPesquisa2" class="col-sm-5">
-                        </div>
-                        <div class="col-sm-1"></div>
                     </div>
                 </div>
             </form>
-        </div>
-
-        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
-        <!-- Image table -->
-        <div id="divResultsTable" style="display: none; padding-top:1em;">
         </div>
 
 
@@ -526,6 +514,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </body>
 </html>
