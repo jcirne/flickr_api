@@ -39,6 +39,15 @@
         body {
             overflow: hidden;
         }
+        img.thumb {
+            cursor: pointer;
+            filter: brightness(100%);
+            border: 1px solid transparent;
+        }
+        img.thumb:hover {
+            filter: brightness(110%);
+            border: 1px solid gray;
+        }
     </style>
 
 
@@ -47,8 +56,11 @@
     <!-- All the page specific scripts -->
     <script type="text/javascript">
         'use strict';
-        var fFilter = "",
+        var dStreamData,
+            tStreamTable,
+            fFilter = "",
             iTriggerAbout = 0,
+            iTriggerWheel = 0,
             iDetailSize = 4;
 
         // Initial settings
@@ -59,6 +71,7 @@
                     hideAbout();
                     hideDetail();
                     hideFilter();
+                    hideThumb();
                     $('html,body').css('cursor', 'default');
                 }
                 // if (event.keyCode === 13) {
@@ -69,6 +82,7 @@
 
             // Window resize
             $(window).resize(function () {
+                hideThumb(true);
                 hideDetail(true);
                 if ($('#divAbout:visible').length != 0) {
                     hideAbout(true);
@@ -86,7 +100,7 @@
                 }
                 if ($('#divFilter:visible').length != 0) {
                     hideFilter(true);
-                    setTimeout(showFilter, 500);
+                    setTimeout(function () { showFilter(); });
                 }
             });
 
@@ -99,9 +113,15 @@
                 getStream($('#selectStream').val());
             });
 
-            // Set detail mousewheel behaviour
-            $('#divDetail').bind('mousewheel DOMMouseScroll', function (e) {
-                changeDetail(e.originalEvent.wheelDelta / 120 > 0);
+            // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others my trigger several...)
+            $('#divDetail').bind('wheel mousewheel DOMMouseScroll', function (e) {
+                iTriggerWheel++;
+                setTimeout(function () {
+                    iTriggerWheel--;
+                    if (iTriggerWheel === 0) {
+                        changeDetail(e.originalEvent.wheelDelta / 120 > 0);
+                    }
+                });
             });
 
             // Set image load behaviour
@@ -113,83 +133,16 @@
             //$('#divDetail').draggable({ handle: '#divDetailHead' });
             $('#divAbout').draggable({ handle: '#divAboutHead' });
 
+            // DataTable
+            tStreamTable = $('#tableStreamTable').DataTable({
+                pageLength: 10,
+                dom: 'rftip'
+            });
+
             // Get initial stream
             getStream($('#selectStream').val());
         })
 
-
-
-        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-        // flickr api methods
-
-        // Get stream with default parameters
-        //
-        // api_key (Necessário)
-        //      Your API application key. See here for more details.
-        // date (Opcional)
-        //      A specific date, formatted as YYYY-MM-DD, to return interesting photos for.
-        // extras (Opcional)
-        //      A comma-delimited list of extra information to fetch for each returned record. Currently supported fields are: description, license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo, tags, machine_tags, o_dims, views, media, path_alias, url_sq, url_t, url_s, url_q, url_m, url_n, url_z, url_c, url_l, url_o
-        // per_page (Opcional)
-        //      Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
-        // page (Opcional)
-        //      The page of results to return. If this argument is omitted, it defaults to 1.
-        function getStream(sStream) {
-            $.ajax({
-                url: 'https://api.flickr.com/services/rest/',
-                data: {
-                    method: sStream,
-                    api_key: '3e1dd5433dff3783aa605af9e23548f1',
-                    format: 'json',
-                    nojsoncallback: 1
-                },
-                type: 'GET',
-                cache: false,
-                success: function (data, textStatus, jqXHR) {
-                    actStream(data);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown);
-                }
-            });
-        }
-
-        // Called after get action on stream with default parameters
-        //
-        // Inputs: "data"
-        // {   "photos": {
-        //         "page": 1,
-        //         "pages": 5,
-        //         "perpage": 100,
-        //         "total": "500", 
-        //         "photo": [
-        //             { "id": "34678336434", "owner": "46170864@N02", "secret": "8100d485b4", "server": "4288", "farm": 5, "title": "Ridiculous", "ispublic": 1, "isfriend": 0, "isfamily": 0 },
-        //                 ...
-        //             { "id": "35520667645", "owner": "78529489@N04", "secret": "4bf5b2b881", "server": "4216", "farm": 5, "title": "Lake Camp reflections, Canterbury New Zealand", "ispublic": 1, "isfriend": 0, "isfamily": 0 }
-        //         ] },
-        //     "stat": "ok" }
-        function actStream(data) {
-            if (data.stat === "ok") {
-                $.each(data.photos.photo, function (i, item) {
-                    var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
-
-                    $("<img>")
-                        .attr("id", i)
-                        .attr("src", sSimpleURL + "_q.jpg")
-                        .attr("data-simple-url", sSimpleURL)
-                        .attr("title", item.title)
-                        .attr("style", "padding-left: 1em; padding-top: 1em;")
-                        .attr("onclick", "showDetail('" + i + "');")
-                        .appendTo("#images");
-                    if (i === 13) {
-                        return false;
-                    }
-                });
-            }
-        }
-
-        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-        
 
 
         // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -213,6 +166,7 @@
             $('#trFilter').removeClass('element_with_changes');
             $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown();
             $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
+            tStreamTable.columns.adjust().draw();
         }
 
         function hideFilter(bInstant) {
@@ -224,12 +178,12 @@
                 $('#divFilter').slideUp();
             }
             $('#spanFilterIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
-            if (stringifyFilter() !== filter) {
-                $('#trFilter').addClass('element_with_changes');
-            }
-            else {
-                $('#trFilter').removeClass('element_with_changes');
-            }
+            //if (stringifyFilter() !== fFilter) {
+            //    $('#trFilter').addClass('element_with_changes');
+            //}
+            //else {
+            //    $('#trFilter').removeClass('element_with_changes');
+            //}
         }
 
         function toggleFilter() {
@@ -240,6 +194,37 @@
             else {
                 showFilter();
             }
+        }
+
+
+
+        // Show thumbnail image over table row 
+        function showThumb(iThumbIndex) {
+
+            setTimeout(function () {
+                if ($('#divThumb:visible').length == 0) {
+                    var oThumb = $('#thumb_' + iThumbIndex),
+                        oContainerPos = $('#divFilter').position(),
+                        oThumbPos = oThumb.position();
+
+                    $('#imgThumb').attr("src", oThumb.attr("data-square-url"));
+                    $('#divThumb').css('left', oContainerPos.left + oThumbPos.left + oThumb.width() + 40).css('top', oContainerPos.top + oThumbPos.top + 20).fadeIn();
+                }
+            });
+
+            return false;
+        }
+
+        function hideThumb(bInstant) {
+
+            if (bInstant) {
+                $('#divThumb').hide();
+            }
+            else {
+                $('#divThumb').fadeOut();
+            }
+
+            return false;
         }
 
 
@@ -342,7 +327,111 @@
 
             setTimeout(function () {
                 window.open(sLink, '_blank');
-            }, 500);
+            });
+        }
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+
+
+        // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+        // flickr api methods
+
+        // Get stream with default parameters
+        //
+        // api_key (Necessário)
+        //      Your API application key. See here for more details.
+        // date (Opcional)
+        //      A specific date, formatted as YYYY-MM-DD, to return interesting photos for.
+        // extras (Opcional)
+        //      A comma-delimited list of extra information to fetch for each returned record. Currently supported fields are: description, license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo, tags, machine_tags, o_dims, views, media, path_alias, url_sq, url_t, url_s, url_q, url_m, url_n, url_z, url_c, url_l, url_o
+        // per_page (Opcional)
+        //      Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+        // page (Opcional)
+        //      The page of results to return. If this argument is omitted, it defaults to 1.
+        function getStream(sStream) {
+
+            $('#images').empty();
+            $('#images').text("Loading...");
+            $('html,body').css('cursor', 'wait');
+            tStreamTable.clear();
+            $.ajax({
+                url: 'https://api.flickr.com/services/rest/',
+                data: {
+                    method: sStream,
+                    api_key: '3e1dd5433dff3783aa605af9e23548f1',
+                    format: 'json',
+                    nojsoncallback: 1,
+                    extras: 'owner_name, url_sq'
+                },
+                type: 'GET',
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.stat === "ok") {
+                        dStreamData = data;
+                        $('#images').text("");
+                        $('html,body').css('cursor', 'default');
+                        actStream(data);
+                    }
+                    else {
+                        alert("Data status: " + data.stat);
+                        $('#images').text("No photos found");
+                        $('html,body').css('cursor', 'default');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    $('#images').text("No photos found");
+                    $('html,body').css('cursor', 'default');
+                }
+            });
+        }
+
+        // Called after get action on stream with default parameters
+        //
+        // Inputs: "data"
+        // {   "photos": {
+        //         "page": 1,
+        //         "pages": 5,
+        //         "perpage": 100,
+        //         "total": "500", 
+        //         "photo": [
+        //             { "id": "34678336434", "owner": "46170864@N02", "secret": "8100d485b4", "server": "4288", "farm": 5, "title": "Ridiculous", "ispublic": 1, "isfriend": 0, "isfamily": 0 },
+        //                 ...
+        //             { "id": "35520667645", "owner": "78529489@N04", "secret": "4bf5b2b881", "server": "4216", "farm": 5, "title": "Lake Camp reflections, Canterbury New Zealand", "ispublic": 1, "isfriend": 0, "isfamily": 0 }
+        //         ] },
+        //     "stat": "ok" }
+        function actStream(data) {
+            if (data.stat === "ok") {
+                $.each(data.photos.photo, function (i, item) {
+                    var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
+
+                    $('<img/>')
+                        .attr("id", i)
+                        .attr("src", sSimpleURL + "_q.jpg")
+                        .attr("data-simple-url", sSimpleURL)
+                        .attr("title", item.title)
+                        .attr("class", "thumb")
+                        .attr("onclick", "showDetail('" + i + "');")
+                        .appendTo('#images');
+                    if (i === 21) {
+                        return false;
+                    }
+                    $('<span/>')
+                        .attr("style", "padding-left: 15px;")
+                        .appendTo('#images');
+                });
+
+                $.each(data.photos.photo, function (i, item) {
+                    tStreamTable.row.add([
+                        "<span onmousemove='showThumb(" + i + ");' onmouseout='hideThumb();' id='thumb_" + i + "' data-square-url='" + item.url_sq + "' >" + item.ownername + "</span>",
+                        i + '.2',
+                        i + '.3',
+                        i + '.4',
+                        i + '.5'
+                    ]).draw(false);
+                });
+            }
         }
 
         // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -375,6 +464,7 @@
                         <select id="selectStream" class="simple-select">
                             <option value="flickr.interestingness.getList">Interesting Photos</option>
                             <option value="flickr.photos.getPopular">Popular Photos</option>
+                            <option value="flickr.photos.getRecent">Recent Photos</option>
                         </select>
                     </div>
                 </div>
@@ -385,7 +475,10 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Image stream -->
-        <div id="images">
+        <div class="row" style="padding-top: 2em; padding-bottom: 2em;">
+            <div class="col-sm-1"></div>
+            <div id="images" class="col-sm-10 text-center">
+            </div>
         </div>
 
 
@@ -394,15 +487,43 @@
         <!-- Filter -->
         <div id="divFilter" style="display: none; position: absolute; z-index: 1; background-color: rgba(245, 245, 245, 0.9); border: 1px solid rgb(170, 170, 170); padding-top: 1.5em; padding-bottom: 0.5em;">
             <form id="formFilter">
-                <div class="row" style="padding-top: 1.5em; padding-bottom: 0.5em;">
+                <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <div id="divStreamTable" style="display: none; padding-top:1em;">
+                            <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
+                                <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Owner</th>
+                                            <th>Column 2</th>
+                                            <th>Column 3</th>
+                                            <th>Column 4</th>
+                                            <th>Column 5</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Owner</th>
+                                            <th>Column 2</th>
+                                            <th>Column 3</th>
+                                            <th>Column 4</th>
+                                            <th>Column 5</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image detail -->
+        <div id="divThumb" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+            <img id="imgThumb" />
         </div>
 
 
