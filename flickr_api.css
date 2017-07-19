@@ -1,0 +1,14 @@
+﻿body {
+    overflow: hidden;
+}
+
+img.thumb {
+    cursor: pointer;
+    filter: brightness(100%);
+    border: 1px solid transparent;
+}
+
+img.thumb:hover {
+    filter: brightness(110%);
+    border: 1px solid gray;
+}

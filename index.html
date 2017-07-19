@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head id="PageHead">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <title>flickr [api]</title>
+    <link href="https://www.flickr.com/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- jQuery reference. -->
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- Bootstrap reference. -->
+    <!-- http://getbootstrap.com/getting-started/ -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- DataTables reference. -->
+    <!-- https://cdn.datatables.net/ -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- Chosen reference. -->
+    <!-- https://harvesthq.github.io/chosen/ -->
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/chosen/1.7.0/chosen.min.css">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/chosen/1.7.0/chosen.jquery.min.js"></script>
+
+
+
+    <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+    <!-- All the page specific styles and scripts -->
+    <link rel="stylesheet" type="text/css" href="flickr_api.css">
+    <script type="text/javascript" src="flickr_api.js"></script>
+
+</head>
+
+<body onload="onPageLoad()">
+    <div id="content">
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Title and filter control -->
+        <div>
+            <div class="row" style="padding-top: 10px; padding-bottom: 5px; padding-left: 80px; padding-right: 15px; border-bottom:1px solid darkorange;">
+                <div class="col-sm-12">
+                    <label style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">flickr [api]</label>
+                    <div class="pull-right" onclick="showAbout();" title="About Flickr[api]">
+                        <a href="#" onclick="showAbout();"><span class="glyphicon glyphicon-question-sign" style="padding-top: 5px;"></span></a>
+                        <label class="control-label">&nbsp; About &nbsp;</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 20px;">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        <label class="control-label" style="padding-right: 10px;">Current Stream:</label>
+                        <select id="selectStream" class="simple-select">
+                            <option value="flickr.interestingness.getList">Interesting Photos</option>
+                            <option value="flickr.photos.getPopular">Popular Photos</option>
+                            <option value="flickr.photos.getRecent">Recent Photos</option>
+                        </select>
+                        <label class="control-label" style="padding-left: 20px; padding-right: 10px;">Filter Stream:</label>
+                        <a href="#">
+                            <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Toggle stream filter" onclick="toggleFilter();" style="padding-left: 10px; padding-right: 10px;"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image stream -->
+        <div class="row" style="padding-top: 2em; padding-bottom: 2em;">
+            <div class="col-sm-1"></div>
+            <div id="images" class="col-sm-10 text-center">
+            </div>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Filter -->
+        <div id="divFilter" style="display: none; position: absolute; z-index: 1; background-color: rgba(245, 245, 245, 0.9); border: 1px solid rgb(170, 170, 170); padding-top: 1.5em; padding-bottom: 0.5em;">
+            <form id="formFilter">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
+                                <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Owner</th>
+                                            <th>Column 2</th>
+                                            <th>Column 3</th>
+                                            <th>Column 4</th>
+                                            <th>Column 5</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Owner</th>
+                                            <th>Column 2</th>
+                                            <th>Column 3</th>
+                                            <th>Column 4</th>
+                                            <th>Column 5</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image detail -->
+        <div id="divThumb" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+            <img id="imgThumb" />
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image detail -->
+        <div id="divDetail" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+            <!--<div id="divDetailHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; cursor: move;">-->
+            <div id="divDetailHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label id="labelDetailTitle" style="font: bold 12pt/normal Arial;"></label>
+                        <div class="pull-right" onclick="hideDetail();">
+                            <a href="#" title="Close"><span class="glyphicon glyphicon-off"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <img id="imgDetail" data-simple-url="" style="padding-left: 10px; padding-right: 10px; padding-bottom: 10px;"/>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- About -->
+        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 2; background-color: rgba(255, 255, 255, 0.8);">
+            <div id="divAbout" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1); border: 1px solid rgb(170, 170, 170);">
+                <div id="divAboutHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; cursor: move;">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label style="font: bold 12pt/normal Arial;">About</label>
+                            <div class="pull-right" onclick="hideAbout();">
+                                <a href="#" title="Close"><span class="glyphicon glyphicon-off"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <p class="text-justify">
+                            Welcome to this single page app example.
+                            It uses the flickr api to show a few skills in front-end development.
+                        </p>
+                        <p class="text-justify">
+                            Reference for the frameworks and tools used:
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('https://jquery.com/');">
+                        <a href="#" title="Open jQuery website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">jQuery &nbsp; [3.2.1]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('https://jqueryui.com/');">
+                        <a href="#" title="Open jQuery user interface website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">jQuery UI &nbsp; [1.12.1]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('http://getbootstrap.com/');">
+                        <a href="#" title="Open Bootstrap website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">Bootstrap &nbsp; [3.3.7]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('https://datatables.net/');">
+                        <a href="#" title="Open Datatables website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">Datatables &nbsp; [1.10.15]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('https://harvesthq.github.io/chosen/');">
+                        <a href="#" title="Open Chosen website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">Choosen &nbsp; [1.7.0]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('https://www.flickr.com/services/api/');">
+                        <a href="#" title="Open flickr App Garden website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-new-window"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">flickr App Garden</label>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom: 1em;">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
