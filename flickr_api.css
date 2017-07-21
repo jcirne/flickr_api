@@ -1,4 +1,5 @@
 ﻿body {
+    /*overflow-x: hidden;*/
     overflow: hidden;
 }
 
@@ -11,4 +12,17 @@ img.thumb {
 img.thumb:hover {
     filter: brightness(110%);
     border: 1px solid gray;
+}
+
+div.attached {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.detached {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

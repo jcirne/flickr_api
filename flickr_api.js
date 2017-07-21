@@ -1,20 +1,26 @@
-﻿'use strict';
+﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// Global variables
+'use strict';
 var dStreamData,
     tStreamTable,
     fFilter = "",
     iTriggerAbout = 0,
     iTriggerWheel = 0,
-    iDetailSize = 4;
+    iDetailSize = 4,
+    bDetailAttached = false;
 
 
 
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Initial settings
 function onPageLoad() {
     // Esc and Enter keys
     $(document).keydown(function (event) {
         if (event.keyCode === 27) {
             hideAbout();
-            hideDetail();
+            if (!bDetailAttached) {
+                hideDetail();
+            }
             hideFilter();
             hideThumb();
             $('html,body').css('cursor', 'default');
@@ -28,7 +34,9 @@ function onPageLoad() {
     // Window resize
     $(window).resize(function () {
         hideThumb(true);
-        hideDetail(true);
+        if (!bDetailAttached) {
+            hideDetail(true);
+        }
         if ($('#divAbout:visible').length != 0) {
             hideAbout(true);
             iTriggerAbout = 1;
@@ -88,14 +96,25 @@ function onPageLoad() {
     getStream($('#selectStream').val());
 }
 
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-
+// Generic functions
 function stringifyFilter() {
     //return JSON.stringify($('#formFilter').serializeArray());
     //return $('#formFilter').serialize();
     return "";
+}
+
+
+
+function detachLink(sLink) {
+
+    setTimeout(function () {
+        window.open(sLink, '_blank');
+    });
 }
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -103,14 +122,13 @@ function stringifyFilter() {
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-// UI methods
-
+// Filter functions
 function showFilter() {
 
     hideDetail();
     $('#trFilter').removeClass('element_with_changes');
     $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown();
-    $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
+    $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
 
@@ -122,13 +140,7 @@ function hideFilter(bInstant) {
     else {
         $('#divFilter').slideUp();
     }
-    $('#spanFilterIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
-    //if (stringifyFilter() !== fFilter) {
-    //    $('#trFilter').addClass('element_with_changes');
-    //}
-    //else {
-    //    $('#trFilter').removeClass('element_with_changes');
-    //}
+    $('#spanFilterIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right').attr("title", "Show stream filter");
 }
 
 function toggleFilter() {
@@ -141,9 +153,12 @@ function toggleFilter() {
     }
 }
 
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 
-// Show thumbnail image over table row 
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// Show thumbnail image over table row
 function showThumb(iThumbIndex) {
 
     setTimeout(function () {
@@ -172,7 +187,11 @@ function hideThumb(bInstant) {
     return false;
 }
 
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
+
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 function setDetail(iSet) {
 
@@ -235,8 +254,43 @@ function hideDetail(bInstant) {
     return false;
 }
 
+function toggleAttach() {
+
+    $('#divDetail').hide();
+    if (bDetailAttached) {
+        $('#divDetail').removeClass('attached').addClass('detached');
+        $('#AttachIcon > span').removeClass('glyphicon-new-window').addClass('glyphicon-pushpin');
+        $('#AttachIcon').attr("title", "Pin to page");
+    }
+    else {
+        $('#divDetail').removeClass('detached').addClass('attached');
+        $('#AttachIcon > span').removeClass('glyphicon-pushpin').addClass('glyphicon-new-window');
+        $('#AttachIcon').attr("title", "Unpin from page");
+    }
+    bDetailAttached = !bDetailAttached;
+    $('#divDetail').fadeIn();
+}
+
+function toggleImageInfo() {
+
+    if ($('#divDetailInfo:visible').length > 0) {
+        $('#ImageInfoIcon > span').removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
+        $('#ImageInfoIcon').attr("title", "Show image info");
+        $('#divDetailInfo').hide();
+    }
+    else {
+        $('#ImageInfoIcon > span').removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
+        $('#ImageInfoIcon').attr("title", "Hide image info");
+        $('#divDetailInfo').show();
+    }
+}
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// About functions
 function showAbout() {
 
     if ($('#divAbout:visible').length === 0) {
@@ -264,15 +318,6 @@ function hideAbout(bInstant) {
     }
 
     return false;
-}
-
-
-
-function detachLink(sLink) {
-
-    setTimeout(function () {
-        window.open(sLink, '_blank');
-    });
 }
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -359,9 +404,16 @@ function actStream(data) {
                 .attr("class", "thumb")
                 .attr("onclick", "showDetail('" + i + "');")
                 .appendTo('#images');
-            if (i === 21) {
+
+
+
+
+            if (i === 4) {
                 return false;
             }
+
+
+
             $('<span/>')
                 .attr("style", "padding-left: 15px;")
                 .appendTo('#images');
