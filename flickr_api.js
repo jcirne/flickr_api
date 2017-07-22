@@ -79,6 +79,7 @@ function onPageLoad() {
 
     // Set image load behaviour
     $('#imgDetail').on('load', function () {
+        $('#imgDetail').css('opacity', '1')
         $('html,body').css('cursor', 'default');
     });
 
@@ -197,22 +198,22 @@ function setDetail(iSet) {
 
     switch (iSet) {
         case 1:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
             break;
         case 2:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_z.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_z.jpg");
             break;
         case 3:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_c.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_c.jpg");
             break;
         case 4:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_b.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_b.jpg");
             break;
         case 5:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_h.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_h.jpg");
             break;
         case 6:
-            $('#imgDetail').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
+            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
             break;
     }
 }
