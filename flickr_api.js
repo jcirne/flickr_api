@@ -88,11 +88,11 @@ function actStream(data) {
                 .attr('data-simple-url', sSimpleURL)
                 .attr('title', item.title)
                 .attr('class', "thumb")
-                .attr('style', i < 5 ? "" : "display: none;")
+                .attr('style', (i < 5 ? "" : "display: none;"))
                 .attr('onclick', "showDetail('" + item.id + "');")
                 .appendTo('#images');
             $('<span/>')
-                .attr("style", "padding-left: 15px;")
+                .attr("style", "padding-left: 15px;" + (i < 5 ? "" : " display: none;"))
                 .appendTo('#images');
         });
 
