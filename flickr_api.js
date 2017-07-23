@@ -109,3 +109,51 @@ function actStream(data) {
         });
     }
 }
+
+// Opens the image page in a new tab
+//
+// {   "photo": { "id": "36083308015", "secret": "0e438221d6", "server": "4309", "farm": 5, "dateuploaded": "1500724244", "isfavorite": 0, "license": 0, "safety_level": 0, "rotation": 0, 
+//     "owner": { "nsid": "46170864@N02", "username": "Melissa James Photography", "realname": "", "location": "", "iconserver": "4036", "iconfarm": 5, "path_alias": "melissa_vet" }, 
+//     "title": { "_content": "Headliner" }, 
+//     "description": { "_content": "<b>Fiery-throated Hummingbird<\/b> <i>(Panterpe insignis)<\/i>\n\nHe appears to be singing away like the star of a show in a spotlight.\n\nNikon D500 - 200-500mm lens - 440mm - ISO 2000 - f\/6.3 - 1\/2500" }, 
+//     "visibility": { "ispublic": 1, "isfriend": 0, "isfamily": 0 }, 
+//     "dates": { "posted": "1500724244", "taken": "2017-07-22 07:45:56", "takengranularity": 0, "takenunknown": 1, "lastupdate": "1500829727" }, "views": "51507", 
+//     "editability": { "cancomment": 1, "canaddmeta": 0 }, 
+//     "publiceditability": { "cancomment": 1, "canaddmeta": 0 }, 
+//     "usage": { "candownload": 0, "canblog": 1, "canprint": 0, "canshare": 0 }, 
+//     "comments": { "_content": "121" }, 
+//     "notes": { "note": [ ... ] }, 
+//     "people": { "haspeople": 0 }, 
+//     "tags": { "tag": [
+//         { "id": "46150516-36083308015-3054", "author": "46170864@N02", "authorname": "Melissa James Photography", "raw": "Costa Rica", "_content": "costarica", "machine_tag": 0 },
+//         { "id": "46150516-36083308015-1575503", "author": "46170864@N02", "authorname": "Melissa James Photography", "raw": "Panterpe insignis", "_content": "panterpeinsignis", "machine_tag": 0 },
+//         { "id": "46150516-36083308015-1575502", "author": "46170864@N02", "authorname": "Melissa James Photography", "raw": "Fiery-throated Hummingbird", "_content": "fierythroatedhummingbird", "machine_tag": 0 } ] }, 
+//     "urls": {
+//         "url": [ { "type": "photopage", "_content": "https:\/\/www.flickr.com\/photos\/melissa_vet\/36083308015\/" } ] },
+//         "media": "photo" },
+//     "stat": "ok" }
+function openPhotoPage(sID) {
+
+    $('html,body').css('cursor', 'wait');
+    $.ajax({
+        url: 'https://api.flickr.com/services/rest/',
+        data: {
+            method: 'flickr.photos.getInfo',
+            api_key: '3e1dd5433dff3783aa605af9e23548f1',
+            format: 'json',
+            nojsoncallback: 1,
+            photo_id: sID
+        },
+        type: 'GET',
+        cache: false,
+        success: function (data, textStatus, jqXHR) {
+            if (data.stat === "ok" && data.photo.urls.url.length > 0 ) {
+                detachLink(data.photo.urls.url[0]._content.replace(/\\/g, ''));
+            }
+            $('html,body').css('cursor', 'default');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $('html,body').css('cursor', 'default');
+        }
+    });
+}

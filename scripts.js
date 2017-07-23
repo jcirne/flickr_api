@@ -6,13 +6,14 @@ var dStreamData = null,
     fFilter = "",
     iTriggerAbout = 0,
     iTriggerWheel = 0,
-    iDetailSize = 4,
+    iDetailSize = 3,
     bDetailAttached = false;
 
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Initial settings
+
 function onPageLoad() {
     // Esc and Enter keys
     $(document).keydown(function (event) {
@@ -85,8 +86,7 @@ function onPageLoad() {
 
     // Set image load behaviour
     $('#imgDetail').on('load', function () {
-        $('#imgDetail').css('opacity', '1')
-        $('html,body').css('cursor', 'default');
+        onDetailLoad();
     });
 
     // Draggable divs
@@ -116,6 +116,7 @@ function onPageLoad() {
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Generic functions
+
 function stringifyFilter() {
     //return JSON.stringify($('#formFilter').serializeArray());
     //return $('#formFilter').serialize();
@@ -137,6 +138,7 @@ function detachLink(sLink) {
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Filter functions
+
 function showFilter() {
 
     if (isDetailDetached()) {
@@ -174,6 +176,8 @@ function toggleFilter() {
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// Thumbnail functions
+
 // Show thumbnail image over table row
 function showThumb(iThumbIndex) {
 
@@ -208,30 +212,7 @@ function hideThumb(bInstant) {
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-
-function setDetail(iSet) {
-
-    switch (iSet) {
-        case 1:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
-            break;
-        case 2:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_z.jpg");
-            break;
-        case 3:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_c.jpg");
-            break;
-        case 4:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_b.jpg");
-            break;
-        case 5:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_h.jpg");
-            break;
-        case 6:
-            $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
-            break;
-    }
-}
+// Image detail functions
 
 function changeDetail(bUp) {
     // Only allow 4 sizes, even though there could be more...
@@ -241,19 +222,66 @@ function changeDetail(bUp) {
         $('html,body').css('cursor', 'wait');
         iDetailSize = iNewDetailSize;
     }
-    setDetail(iDetailSize);
+    showDetail($('#imgDetail').attr("data-id"));
 
     return false;
 }
 
-function showDetail(sIndex) {
-            
-    $('html,body').css('cursor', 'wait');
-    $('#labelDetailTitle').text($('img#' + sIndex).attr("title"));
-    $('#imgDetail').attr("data-simple-url", $('img#' + sIndex).attr("data-simple-url")).attr("title", $('img#' + sIndex).attr("title"));
-    setDetail(iDetailSize);
+function onDetailLoad() {
 
-    $('#divDetail').fadeIn();
+    // $('#aDetailTitle').html(detail.title).attr('onclick', "openPhotoPage('" + detail.id + "');");
+    // $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
+    // $('#pDetailDescription').html(detail.description._content);
+    // $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
+    $('#imgDetail').css('opacity', '1')
+    $('html,body').css('cursor', 'default');
+}
+
+function showDetail(sID) {
+    var detail = null,
+        index = -1;
+    
+    if (dStreamData != null) {
+        $.each(dStreamData.photos.photo, function (i, item) {
+            if (item.id == sID) {
+                detail = item;
+                index = i;
+
+                return false;
+            }
+        });
+        
+        if (index >= 0) {
+            $('html,body').css('cursor', 'wait');
+            $('#labelDetailTitle').html(detail.title);
+            $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title).attr("data-simple-url", $('img#' + sID).attr("data-simple-url"));
+            $('#aDetailTitle').html(detail.title).attr('onclick', "openPhotoPage('" + detail.id + "');");
+            $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
+            $('#pDetailDescription').html(detail.description._content);
+            $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
+            switch (iDetailSize) {
+                case 1:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
+                    break;
+                case 2:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_z.jpg");
+                    break;
+                case 3:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_c.jpg");
+                    break;
+                case 4:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_b.jpg");
+                    break;
+                case 5:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_h.jpg");
+                    break;
+                case 6:
+                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
+                    break;
+            }
+            $('#divDetail').fadeIn();
+        }
+    }
 
     return false;
 }
@@ -312,6 +340,7 @@ function isDetailDetached() {
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // About functions
+
 function showAbout() {
 
     if ($('#divAbout:visible').length === 0) {
