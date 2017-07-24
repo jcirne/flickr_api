@@ -103,7 +103,10 @@ function onPageLoad() {
         dom: 'rftip'
     });
     $('#tableStreamTable tbody').on('click', 'tr', function () {
-        showDetail(tStreamTable.row( this ).data()[5]);
+        showDetail(tStreamTable.row(this).data()[5]);
+        if (!bDetailAttached) {
+            toggleAttach();
+        }
     });
 
     // Get initial stream
@@ -117,19 +120,25 @@ function onPageLoad() {
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Generic functions
 
-function stringifyFilter() {
-    //return JSON.stringify($('#formFilter').serializeArray());
-    //return $('#formFilter').serialize();
-    return "";
-}
-
-
-
 function detachLink(sLink) {
 
     setTimeout(function () {
         window.open(sLink, '_blank');
     });
+}
+
+
+
+function isEmptyString(str) {
+
+    return (!str || str === "");
+}
+
+
+
+function preventEmptyTitle(sTitle) {
+
+    return (isEmptyString(sTitle) ? "<em><small>photo without title<small></em>" : sTitle)
 }
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -178,7 +187,7 @@ function toggleFilter() {
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Thumbnail functions
 
-// Show thumbnail image over table row
+// Show thumbnail image over table cell
 function showThumb(iThumbIndex) {
 
     setTimeout(function () {
@@ -229,10 +238,6 @@ function changeDetail(bUp) {
 
 function onDetailLoad() {
 
-    // $('#aDetailTitle').html(detail.title).attr('onclick', "openPhotoPage('" + detail.id + "');");
-    // $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
-    // $('#pDetailDescription').html(detail.description._content);
-    // $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
     $('#imgDetail').css('opacity', '1')
     $('html,body').css('cursor', 'default');
 }
@@ -253,12 +258,17 @@ function showDetail(sID) {
         
         if (index >= 0) {
             $('html,body').css('cursor', 'wait');
-            $('#labelDetailTitle').html(detail.title);
+            $('#labelDetailTitle').html(preventEmptyTitle(detail.title));
             $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title).attr("data-simple-url", $('img#' + sID).attr("data-simple-url"));
-            $('#aDetailTitle').html(detail.title).attr('onclick', "openPhotoPage('" + detail.id + "');");
+            $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr('onclick', "openPhotoPage('" + detail.id + "');");
             $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
             $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
+
+
+            $('#divDetailInfo').css('width', '640px'); // Photo size here!
+
+
             switch (iDetailSize) {
                 case 1:
                     $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");

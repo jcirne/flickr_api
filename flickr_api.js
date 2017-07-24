@@ -92,18 +92,19 @@ function actStream(data) {
                 .attr('onclick', "showDetail('" + item.id + "');")
                 .appendTo('#images');
             $('<span/>')
-                .attr("style", "padding-left: 15px;" + (i < 5 ? "" : " display: none;"))
+                .attr("style", "padding-left: 15px;" + (i < 4 ? "" : " display: none;"))
                 .appendTo('#images');
         });
 
         $.each(data.photos.photo, function (i, item) {
             tStreamTable.row.add([
-                "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb();' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + item.title + "</span>",
+                "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb();' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
                 item.ownername,
                 item.description._content,
-                item.tags,
+                (item.tags.length > 80 ? item.tags.substring(0, 77) + "..." : item.tags),
                 "available sizes...",
                 item.id,
+                item.tags,
                 item.url_sq
             ]).draw(false);
         });
