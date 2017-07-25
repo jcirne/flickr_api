@@ -6,7 +6,7 @@ var dStreamData = null,
     fFilter = "",
     iTriggerAbout = 0,
     iTriggerWheel = 0,
-    iDetailSize = 3,
+    iDetailSize = 7,
     bDetailAttached = false;
 
 
@@ -208,6 +208,7 @@ function hideThumb(bInstant) {
     else {
         $('#divThumb').fadeOut();
     }
+    $('#imgThumb').attr("src", "//:0");
 
     return false;
 }
@@ -219,24 +220,52 @@ function hideThumb(bInstant) {
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Image detail functions
 
-function changeDetail(bUp) {
-    // TODO JC
-    var iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 5) : Math.max(iDetailSize - 1, 2);
-
-    if (iNewDetailSize != iDetailSize) {
-        $('html,body').css('cursor', 'wait');
-        iDetailSize = iNewDetailSize;
-    }
-    showDetail($('#imgDetail').attr("data-id"));
-
-    return false;
-}
-
 function onDetailLoad() {
 
     $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
     $('#imgDetail').css('opacity', '1')
     $('html,body').css('cursor', 'default');
+}
+
+function changeDetail(bUp) {
+
+    iDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4.
+    showDetail($('#imgDetail').attr("data-id"));
+
+    return false;
+}
+
+function setDetailSize(url, order, size) {
+    var link;
+
+    switch (order) {
+        case 6:
+            link = $('#url_mIcon');
+            break;
+        case 7:
+            link = $('#url_zIcon');
+            break;
+        case 8:
+            link = $('#url_cIcon');
+            break;
+        case 9:
+            link = $('#url_lIcon');
+            break;
+    }
+    link.removeClass().attr("onclick", "return false;");
+    if (typeof(url) != "undefined") {
+        if (iDetailSize === order) {
+            link.attr("title", "Photo is shown in " + size).addClass('selected');
+            $('html,body').css('cursor', 'wait');
+            $('#imgDetail').css('opacity', '0.6').attr("src", url);
+        }
+        else {
+            link.attr("title", "Show photo in " + size).attr("onclick", "iDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
+        }
+    }
+    else {
+        link.attr("title", "This size is not available").addClass('disabled');
+    }
 }
 
 function showDetail(sID) {
@@ -254,34 +283,23 @@ function showDetail(sID) {
         });
         
         if (index >= 0) {
-            $('html,body').css('cursor', 'wait');
             $('#labelDetailTitle').html(preventEmptyTitle(detail.title));
             $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title).attr("data-simple-url", $('img#' + sID).attr("data-simple-url"));
-            $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr('onclick', "openPhotoPage('" + detail.id + "');");
-            $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
+            $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr("onclick", "openPhotoPage('" + detail.id + "');");
+            $('#aDetailAuthor').html(detail.ownername).attr("onclick", "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
             $('#pDetailTags').html(isEmptyString(detail.tags) ? "<em>Photo without tags</em>" : "<b>Tags: </b>" + detail.tags);
-            // TODO JC
-            switch (iDetailSize) {
-                case 1:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");
-                    break;
-                case 2:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_z.jpg");
-                    break;
-                case 3:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_c.jpg");
-                    break;
-                case 4:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_b.jpg");
-                    break;
-                case 5:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_h.jpg");
-                    break;
-                case 6:
-                    $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_k.jpg");
-                    break;
+            if (typeof(detail.url_o) != "undefined") {
+                $('#OriginalIcon').attr("title", "Show original photo in new tab").attr("onclick", "detachLink('" + detail.url_o + "');").removeClass('disabled');
             }
+            else {
+                $('#OriginalIcon').attr("title", "Original photo not available").attr("onclick", "return false;").addClass('disabled');
+            }
+            setDetailSize(detail.url_l, 9, detail.width_l + "x" + detail.height_l);
+            setDetailSize(detail.url_c, 8, detail.width_c + "x" + detail.height_c);
+            setDetailSize(detail.url_z, 7, detail.width_z + "x" + detail.height_z);
+            setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m);
+
             $('#divDetail').fadeIn();
         }
     }

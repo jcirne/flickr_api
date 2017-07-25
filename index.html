@@ -88,48 +88,46 @@
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Filter -->
         <div id="divFilter" class="border-thin" style="display: none; position: absolute; z-index: 2; background-color: rgba(245, 245, 245, 0.9); padding-top: 1.5em; padding-bottom: 0.5em;">
-            <form id="formFilter">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
-                                <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Owner</th>
-                                            <th>Description</th>
-                                            <th>Tags</th>
-                                            <th>Available Sizes</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Owner</th>
-                                            <th>Description</th>
-                                            <th>Tags</th>
-                                            <th>Available Sizes</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
+                            <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Description</th>
+                                        <th>Tags</th>
+                                        <th>Available Sizes</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Description</th>
+                                        <th>Tags</th>
+                                        <th>Available Sizes</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
 
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
-        <!-- Image detail -->
+        <!-- Image thumbnail -->
         <div id="divThumb" class="border-thin" style="display: none; position: absolute; z-index: 3; background-color: rgba(250, 250, 250, 1);">
             <img id="imgThumb" />
         </div>
@@ -143,9 +141,14 @@
             <div id="divDetailHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label id="labelDetailTitle" style="font: bold 12pt/normal Arial;"></label>
+                        <label id="labelDetailTitle" style="font: bold 12pt/normal Arial; padding-right: 20px;"></label>
                         <div class="pull-right">
-                            <a id="ImageInfoIcon" href="#" onclick="toggleImageInfo();" title="Show image info" style="padding-left: 10px;"><span class="glyphicon glyphicon-eye-open"></span></a>
+                            <a id="url_mIcon" href="#" style="font-size: xx-small;"><span class="glyphicon glyphicon-unchecked"></span></a>
+                            <a id="url_zIcon" href="#" style="font-size: x-small;"><span class="glyphicon glyphicon-unchecked"></span></a>
+                            <a id="url_cIcon" href="#" style="font-size: smaller;"><span class="glyphicon glyphicon-unchecked"></span></a>
+                            <a id="url_lIcon" href="#"><span class="glyphicon glyphicon-unchecked"></span></a>
+                            <a id="OriginalIcon" href="#" style="padding-left: 5px;"><span class="glyphicon glyphicon-picture"></span></a>
+                            <a id="ImageInfoIcon" href="#" onclick="toggleImageInfo();" title="Show image info" style="padding-left: 20px;"><span class="glyphicon glyphicon-eye-open"></span></a>
                             <a id="AttachIcon" href="#" onclick="toggleAttach();" title="Pin to page" style="padding-left: 10px;"><span class="glyphicon glyphicon-pushpin"></span></a>
                             <a href="#" onclick="hideDetail();" title="Close" style="padding-left: 20px;"><span class="glyphicon glyphicon-off"></span></a>
                         </div>
