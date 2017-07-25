@@ -7,6 +7,10 @@ td {
     white-space: nowrap; overflow: hidden;
 }
 
+tbody tr {
+    cursor: pointer;
+}
+
 img.detail {
     padding-left: 10px;
     padding-right: 10px;

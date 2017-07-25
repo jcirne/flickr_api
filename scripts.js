@@ -260,7 +260,7 @@ function showDetail(sID) {
             $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr('onclick', "openPhotoPage('" + detail.id + "');");
             $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
-            $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
+            $('#pDetailTags').html(isEmptyString(detail.tags) ? "<em>Photo without tags</em>" : "<b>Tags: </b>" + detail.tags);
             // TODO JC
             switch (iDetailSize) {
                 case 1:
@@ -329,6 +329,7 @@ function toggleImageInfo() {
         $('#ImageInfoIcon > span').removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
         $('#ImageInfoIcon').attr("title", "Hide image info");
         $('#divDetailInfo').show();
+        onDetailLoad();
     }
 }
 
