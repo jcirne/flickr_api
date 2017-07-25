@@ -103,6 +103,7 @@ function onPageLoad() {
         dom: 'rftip'
     });
     $('#tableStreamTable tbody').on('click', 'tr', function () {
+        hideFilter();
         showDetail(tStreamTable.row(this).data()[5]);
         if (!bDetailAttached) {
             toggleAttach();
