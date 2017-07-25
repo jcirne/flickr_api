@@ -58,7 +58,7 @@ function onPageLoad() {
         }
     });
 
-    // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others my trigger several...)
+    // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
     $('#divDetail').bind('wheel mousewheel DOMMouseScroll', function (e) {
         iTriggerWheel++;
         setTimeout(function () {
@@ -78,8 +78,7 @@ function onPageLoad() {
     // Chosen
     $('#selectStream').chosen({
         search_contains: true,
-        allow_single_deselect: true,
-        width: '180px'
+        allow_single_deselect: true
     }).change(function () {
         getStream($('#selectStream').val());
     });
@@ -90,6 +89,7 @@ function onPageLoad() {
     });
 
     // Draggable divs
+    // TODO JC
     //$('#divDetail').draggable({ handle: '#divDetailHead' });
     $('#divAbout').draggable({ handle: '#divAboutHead' });
 
@@ -127,14 +127,10 @@ function detachLink(sLink) {
     });
 }
 
-
-
 function isEmptyString(str) {
 
     return (!str || str === "");
 }
-
-
 
 function preventEmptyTitle(sTitle) {
 
@@ -224,7 +220,7 @@ function hideThumb(bInstant) {
 // Image detail functions
 
 function changeDetail(bUp) {
-    // Only allow 4 sizes, even though there could be more...
+    // TODO JC
     var iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 5) : Math.max(iDetailSize - 1, 2);
 
     if (iNewDetailSize != iDetailSize) {
@@ -238,6 +234,7 @@ function changeDetail(bUp) {
 
 function onDetailLoad() {
 
+    $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
     $('#imgDetail').css('opacity', '1')
     $('html,body').css('cursor', 'default');
 }
@@ -264,11 +261,7 @@ function showDetail(sID) {
             $('#aDetailAuthor').html(detail.ownername).attr('onclick', "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
             $('#pDetailTags').html("<b>Tags: </b>" + detail.tags);
-
-
-            $('#divDetailInfo').css('width', '640px'); // Photo size here!
-
-
+            // TODO JC
             switch (iDetailSize) {
                 case 1:
                     $('#imgDetail').css('opacity', '0.7').attr("src", $('#imgDetail').attr("data-simple-url") + "_-.jpg");

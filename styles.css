@@ -7,6 +7,12 @@ td {
     white-space: nowrap; overflow: hidden;
 }
 
+img.detail {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
 img.thumb {
     cursor: pointer;
     filter: brightness(100%);
