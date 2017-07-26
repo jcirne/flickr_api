@@ -18,8 +18,8 @@
 function getStream(sStream) {
 
     hideDetail();
-    $('#images').empty();
-    $('#images').text("Loading...");
+    $('#divImages').empty();
+    $('#divImages').text("Loading...");
     $('html,body').css('cursor', 'wait');
     dStreamData = null;
     tStreamTable.clear();
@@ -38,16 +38,16 @@ function getStream(sStream) {
         success: function (data, textStatus, jqXHR) {
             if (data.stat === "ok") {
                 dStreamData = data;
-                $('#images').text("");
+                $('#divImages').text("");
                 actStream(data);
             }
             else {
-                $('#images').text("No photos found");
+                $('#divImages').text("No photos found");
             }
             $('html,body').css('cursor', 'default');
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $('#images').text("No photos found");
+            $('#divImages').text("No photos found");
             $('html,body').css('cursor', 'default');
         }
     });
@@ -76,7 +76,9 @@ function getStream(sStream) {
 //         ] },
 //     "stat": "ok" }
 function actStream(data) {
+
     if (data.stat === "ok") {
+        $('<ul id="lightSlider"/>').appendTo('#divImages');
         $.each(data.photos.photo, function (i, item) {
             var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
 
@@ -87,17 +89,23 @@ function actStream(data) {
                 .attr('data-simple-url', sSimpleURL)
                 .attr('title', item.title)
                 .attr('class', "thumb")
-                .attr('style', (i < 5 ? "" : "display: none;"))
                 .attr('onclick', "showDetail('" + item.id + "');")
-                .appendTo('#images');
-            $('<span/>')
-                .attr("style", "padding-left: 15px;" + (i < 4 ? "" : " display: none;"))
-                .appendTo('#images');
+                .appendTo($('<li/>').appendTo('#lightSlider'));
+        });
+        oSlider = $('#lightSlider').lightSlider({
+            slideMove: 2,
+            controls: true,
+            pager: false,
+            autoWidth: true,
+            loop: true,
+            keyPress: true,
+            prevHtml: '<span class="glyphicon glyphicon-chevron-left" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>',
+            nextHtml: '<span class="glyphicon glyphicon-chevron-right" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>'
         });
 
         $.each(data.photos.photo, function (i, item) {
             tStreamTable.row.add([
-                "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb();' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
+                "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
                 item.ownername,
                 item.description._content,
                 (item.tags.length > 80 ? item.tags.substring(0, 77) + "..." : item.tags),

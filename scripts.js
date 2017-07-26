@@ -3,6 +3,7 @@
 'use strict';
 var dStreamData = null,
     tStreamTable,
+    oSlider,
     fFilter = "",
     iTriggerAbout = 0,
     iTriggerWheel = 0,
@@ -56,6 +57,9 @@ function onPageLoad() {
             hideFilter(true);
             setTimeout(function () { showFilter(); });
         }
+        if ($('#lightSlider').length != 0) {
+            oSlider.refresh();
+        }
     });
 
     // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
@@ -68,7 +72,6 @@ function onPageLoad() {
                     changeDetail(e.originalEvent.wheelDelta > 0); // Chrome and Edge
                 }
                 else {
-                    
                     changeDetail(e.originalEvent.detail < 0); // Firefox
                 }
             }
@@ -78,7 +81,8 @@ function onPageLoad() {
     // Chosen
     $('#selectStream').chosen({
         search_contains: true,
-        allow_single_deselect: true
+        allow_single_deselect: true,
+        width: 150
     }).change(function () {
         getStream($('#selectStream').val());
     });
@@ -302,6 +306,7 @@ function showDetail(sID) {
             setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m);
 
             $('#divDetail').fadeIn();
+            oSlider.goToSlide(index);
         }
     }
 
