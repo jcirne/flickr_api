@@ -1,15 +1,16 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Global variables
 'use strict';
-var dStreamData = null,
+var bSmallScreen = false,
+    dStreamData = null,
     iStreamPage = 0,
     iStreamPerPage = 100,
     tStreamTable,
     oSlider = null,
     fFilter = "",
-    iTriggerAbout = 0,
     iTriggerWheel = 0,
-    iDetailSize = 7,
+    iTriggerResize = 0,
+    iDetailSize = 0,
     bDetailAttached = false;
 
 
@@ -18,7 +19,8 @@ var dStreamData = null,
 // Initial settings
 
 function onPageLoad() {
-    // Esc and Enter keys
+
+    // Esc and Enter keys event
     $(document).keydown(function (event) {
         if (event.keyCode === 27) {
             hideAbout();
@@ -35,33 +37,20 @@ function onPageLoad() {
         // }
     });
 
-    // Window resize
+    // Window resize event
     $(window).resize(function () {
-        hideThumb(true);
-        if (!bDetailAttached) {
+        iTriggerResize++;
+        if (iTriggerResize === 1) {
             hideDetail(true);
-        }
-        if ($('#divAbout:visible').length != 0) {
             hideAbout(true);
-            iTriggerAbout = 1;
-        }
-        if (iTriggerAbout > 0) {
-            iTriggerAbout++;
-            setTimeout(function() {
-                iTriggerAbout--;
-                if (iTriggerAbout === 1) {
-                    showAbout();
-                    iTriggerAbout = 0;
-                }
-            });
-        }
-        if ($('#divFilter:visible').length != 0) {
             hideFilter(true);
-            setTimeout(function () { showFilter(); });
         }
-        if (oSlider != null) {
-            oSlider.refresh();
-        }
+        setTimeout(function () {
+            iTriggerResize--;
+            if (iTriggerResize === 0) {
+                verifySmallScreen(); // Only called once if many events trigger in a row...
+            }
+        });
     });
 
     // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
@@ -80,7 +69,7 @@ function onPageLoad() {
         });
     });
  
-    // Chosen
+    // Chosen and change event
     $('#selectStream').chosen({
         search_contains: true,
         allow_single_deselect: true,
@@ -116,7 +105,9 @@ function onPageLoad() {
         }
     });
 
-    // Get initial stream
+    // Screen verification and initial stream
+    verifySmallScreen();
+    iDetailSize = bSmallScreen ? 6 : 7;
     getStream($('#selectStream').val());
 }
 
@@ -144,6 +135,26 @@ function preventEmptyTitle(sTitle) {
     return (isEmptyString(sTitle) ? "<em><small>photo without title<small></em>" : sTitle)
 }
 
+function verifySmallScreen() {
+    var bLastSize = bSmallScreen;
+    
+    bSmallScreen = $(document).width() < 900 || $(document).height() < 700; // Small screen calculation
+    if (bSmallScreen != bLastSize) {
+        if (bSmallScreen) {
+            $('#labelStream,#labelFilter').hide();
+        }
+        else {
+            $('#labelStream,#labelFilter').show();
+        }
+        buildSlider();
+    }
+    else {
+        if (oSlider != null) {
+            oSlider.refresh();
+        }
+    }
+}
+
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 
@@ -156,7 +167,6 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#trFilter').removeClass('element_with_changes');
     $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown();
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
@@ -171,6 +181,7 @@ function hideFilter(bInstant) {
         $('#divFilter').slideUp();
     }
     $('#spanFilterIcon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right').attr("title", "Show stream filter");
+    hideThumb();
 }
 
 function toggleFilter() {
@@ -236,7 +247,7 @@ function buildSlider() {
         $.each(dStreamData.photos.photo, function (i, item) {
             $('<img/>')
                 .attr('id', item.id)
-                .attr('src', item.url_q)
+                .attr('src', bSmallScreen ? item.url_sq : item.url_q)
                 .attr('title', item.title)
                 .attr('class', "thumb")
                 .attr('onclick', "showDetail('" + item.id + "');")

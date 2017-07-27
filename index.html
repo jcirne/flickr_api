@@ -64,15 +64,15 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <div class="form-group">
-                        <label class="control-label" style="padding-right: 10px;">Stream:</label>
+                        <label id="labelStream" class="control-label" style="padding-right: 10px;">Stream:</label>
                         <select id="selectStream" class="simple-select">
-                            <option value="flickr.interestingness.getList">Interesting Photos</option>
+                            <option value="flickr.photos.search">All Photos</option>
+                            <option value="flickr.interestingness.getList" selected>Interesting Photos</option>
                             <option value="flickr.photos.getPopular">Popular Photos</option>
                             <option value="flickr.photos.getRecent">Recent Photos</option>
-                            <option value="flickr.photos.search">All Photos</option>
                         </select>
-                        <label class="control-label" style="padding-left: 30px; padding-right: 10px;">Search:</label>
-                        <a href="#" onclick="toggleFilter();">
+                        <label id="labelFilter" class="control-label" style="padding-left: 30px;">Search:</label>
+                        <a href="#" onclick="toggleFilter();" style="padding-left: 10px;">
                             <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Show stream filter"></span>
                         </a>
                         <p id="pStreamInfo" class="pull-right" style="padding-left: 1em; padding-right: 1em; font-size: x-small;"></p>

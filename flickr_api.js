@@ -80,12 +80,12 @@ function loadStream(sStream) {
                 if (iStreamPage < 6) {
                     $('<img/>')
                         .attr('id', data.photos.photo[0].id)
-                        .attr('src', data.photos.photo[0].url_q)
+                        .attr('src', bSmallScreen ? data.photos.photo[0].url_sq : data.photos.photo[0].url_q)
                         .attr('title', data.photos.photo[0].title)
                         .attr('class', "thumb")
                         .attr('onclick', "showDetail('" + data.photos.photo[0].id + "');")
                         .appendTo('#divImages');
-                    $('<span/>').attr("style", "padding-left: 15px;").appendTo('#divImages');
+                    $('<span/>').attr("style", "padding-left: 10px;").appendTo('#divImages');
                 }
 
                 // Add new stream data to search table
