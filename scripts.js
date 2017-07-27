@@ -2,8 +2,10 @@
 // Global variables
 'use strict';
 var dStreamData = null,
+    iStreamPage = 0,
+    iStreamPerPage = 100,
     tStreamTable,
-    oSlider,
+    oSlider = null,
     fFilter = "",
     iTriggerAbout = 0,
     iTriggerWheel = 0,
@@ -57,7 +59,7 @@ function onPageLoad() {
             hideFilter(true);
             setTimeout(function () { showFilter(); });
         }
-        if ($('#lightSlider').length != 0) {
+        if (oSlider != null) {
             oSlider.refresh();
         }
     });
@@ -99,16 +101,16 @@ function onPageLoad() {
 
     // DataTable creation and onclick event in rows
     tStreamTable = $('#tableStreamTable').DataTable({
-        pageLength: 10,
+        pageLength: 5,
         columnDefs: [
-            { targets: [0, 1, 3, 4], visible: true},
+            { targets: [0, 1, 3], visible: true},
             { targets: '_all', visible: false }
         ],
         dom: 'rftip'
     });
     $('#tableStreamTable tbody').on('click', 'tr', function () {
         hideFilter();
-        showDetail(tStreamTable.row(this).data()[5]);
+        showDetail(tStreamTable.row(this).data()[4]);
         if (!bDetailAttached) {
             toggleAttach();
         }
@@ -223,6 +225,40 @@ function hideThumb(bInstant) {
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// Slider functions
+
+function buildSlider() {
+
+    $('#divImages').empty();
+    oSlider = null;
+    if (dStreamData != null) {
+        $('<ul id="lightSlider"/>').appendTo('#divImages');
+        $.each(dStreamData.photos.photo, function (i, item) {
+            $('<img/>')
+                .attr('id', item.id)
+                .attr('src', item.url_q)
+                .attr('title', item.title)
+                .attr('class', "thumb")
+                .attr('onclick', "showDetail('" + item.id + "');")
+                .appendTo($('<li/>').appendTo('#lightSlider'));
+        });
+        oSlider = $('#lightSlider').lightSlider({
+            slideMove: 2,
+            controls: true,
+            pager: false,
+            autoWidth: true,
+            keyPress: true,
+            prevHtml: '<span class="glyphicon glyphicon-chevron-left" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>',
+            nextHtml: '<span class="glyphicon glyphicon-chevron-right" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>'
+        });
+    }
+}
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Image detail functions
 
 function onDetailLoad() {
@@ -289,7 +325,7 @@ function showDetail(sID) {
         
         if (index >= 0) {
             $('#labelDetailTitle').html(preventEmptyTitle(detail.title));
-            $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title).attr("data-simple-url", $('img#' + sID).attr("data-simple-url"));
+            $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title);
             $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr("onclick", "openPhotoPage('" + detail.id + "');");
             $('#aDetailAuthor').html(detail.ownername).attr("onclick", "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
@@ -306,7 +342,9 @@ function showDetail(sID) {
             setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m);
 
             $('#divDetail').fadeIn();
-            oSlider.goToSlide(index);
+            if (oSlider != null) {
+                oSlider.goToSlide(index);
+            }
         }
     }
 

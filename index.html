@@ -69,11 +69,13 @@
                             <option value="flickr.interestingness.getList">Interesting Photos</option>
                             <option value="flickr.photos.getPopular">Popular Photos</option>
                             <option value="flickr.photos.getRecent">Recent Photos</option>
+                            <option value="flickr.photos.search">All Photos</option>
                         </select>
                         <label class="control-label" style="padding-left: 30px; padding-right: 10px;">Search:</label>
                         <a href="#" onclick="toggleFilter();">
                             <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Show stream filter"></span>
                         </a>
+                        <p id="pStreamInfo" class="pull-right" style="padding-left: 1em; padding-right: 1em; font-size: x-small;"></p>
                     </div>
                 </div>
             </div>
@@ -105,7 +107,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th>Available Sizes</th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -117,7 +118,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th>Available Sizes</th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -253,6 +253,15 @@
                     </div>
                     <div class="col-sm-9">
                         <label class="control-label">Choosen &nbsp; [1.7.0]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-1" onclick="detachLink('http://sachinchoolur.github.io/lightslider/');">
+                        <a href="#" title="Open lightSlider website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="control-label">lightSlider &nbsp; [1.1.6]</label>
                     </div>
                 </div>
                 <div class="row">

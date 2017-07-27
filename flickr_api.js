@@ -1,7 +1,20 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // flickr api methods
 
-// Get stream
+function getStream(sStream) {
+
+    hideDetail();
+    $('#divImages').empty();
+    $('#pStreamInfo').text("Loading information from stream...");
+    dStreamData = null;
+    iStreamPage = 0;
+    tStreamTable.clear();
+    loadStream(sStream);
+}
+
+
+
+// Load stream
 //
 // Inputs:
 // api_key (Mandatory)
@@ -15,47 +28,8 @@
 //      Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
 // page (Optional)
 //      The page of results to return. If this argument is omitted, it defaults to 1.
-function getStream(sStream) {
-
-    hideDetail();
-    $('#divImages').empty();
-    $('#divImages').text("Loading...");
-    $('html,body').css('cursor', 'wait');
-    dStreamData = null;
-    tStreamTable.clear();
-    $.ajax({
-        url: 'https://api.flickr.com/services/rest/',
-        data: {
-            method: sStream,
-            api_key: '3e1dd5433dff3783aa605af9e23548f1',
-            format: 'json',
-            nojsoncallback: 1,
-            extras: 'description, owner_name, tags, url_sq, url_m, url_z, url_c, url_l, url_o',
-            per_page: 500
-        },
-        type: 'GET',
-        cache: false,
-        success: function (data, textStatus, jqXHR) {
-            if (data.stat === "ok") {
-                dStreamData = data;
-                $('#divImages').text("");
-                actStream(data);
-            }
-            else {
-                $('#divImages').text("No photos found");
-            }
-            $('html,body').css('cursor', 'default');
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $('#divImages').text("No photos found");
-            $('html,body').css('cursor', 'default');
-        }
-    });
-}
-
-// Called after get stream finishes with success
 //
-// Input "data" example:
+// Output "data" example:
 // {   "photos": {
 //         "page": 1,
 //         "pages": 5,
@@ -75,48 +49,83 @@ function getStream(sStream) {
 //                  ...
 //         ] },
 //     "stat": "ok" }
-function actStream(data) {
+function loadStream(sStream) {
+    
+    $('html,body').css('cursor', 'wait');
+    iStreamPage++;
+    $.ajax({
+        url: 'https://api.flickr.com/services/rest/',
+        data: {
+            method: sStream,
+            api_key: '3e1dd5433dff3783aa605af9e23548f1',
+            format: 'json',
+            nojsoncallback: 1,
+            extras: 'description, owner_name, tags, url_q, url_sq, url_m, url_z, url_c, url_l, url_o',
+            per_page: iStreamPerPage,
+            page: iStreamPage
+        },
+        type: 'GET',
+        cache: false,
+        success: function (data, textStatus, jqXHR) {
+            if (data.stat === "ok") {
+                if (iStreamPage === 1) {
+                    dStreamData = data;
+                    $('#divImages').empty();
+                }
+                else {
+                    $.merge(dStreamData.photos.photo, data.photos.photo);
+                }
 
-    if (data.stat === "ok") {
-        $('<ul id="lightSlider"/>').appendTo('#divImages');
-        $.each(data.photos.photo, function (i, item) {
-            var sSimpleURL = "https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret;
+                // Shows the first image of the first 5 stream pages
+                if (iStreamPage < 6) {
+                    $('<img/>')
+                        .attr('id', data.photos.photo[0].id)
+                        .attr('src', data.photos.photo[0].url_q)
+                        .attr('title', data.photos.photo[0].title)
+                        .attr('class', "thumb")
+                        .attr('onclick', "showDetail('" + data.photos.photo[0].id + "');")
+                        .appendTo('#divImages');
+                    $('<span/>').attr("style", "padding-left: 15px;").appendTo('#divImages');
+                }
 
-            $('<img/>')
-                .attr('id', item.id)
-                .attr('data-index', i)
-                .attr('src', sSimpleURL + "_q.jpg")
-                .attr('data-simple-url', sSimpleURL)
-                .attr('title', item.title)
-                .attr('class', "thumb")
-                .attr('onclick', "showDetail('" + item.id + "');")
-                .appendTo($('<li/>').appendTo('#lightSlider'));
-        });
-        oSlider = $('#lightSlider').lightSlider({
-            slideMove: 2,
-            controls: true,
-            pager: false,
-            autoWidth: true,
-            loop: true,
-            keyPress: true,
-            prevHtml: '<span class="glyphicon glyphicon-chevron-left" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>',
-            nextHtml: '<span class="glyphicon glyphicon-chevron-right" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>'
-        });
+                // Add new stream data to search table
+                $.each(data.photos.photo, function (i, item) {
+                    tStreamTable.row.add([
+                        "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
+                        item.ownername,
+                        item.description._content,
+                        (item.tags.length > 80 ? item.tags.substring(0, 77) + "..." : item.tags),
+                        item.id,
+                        item.tags,
+                        item.url_sq
+                    ]).draw(false);
+                });
 
-        $.each(data.photos.photo, function (i, item) {
-            tStreamTable.row.add([
-                "<span onmousemove='showThumb(" + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
-                item.ownername,
-                item.description._content,
-                (item.tags.length > 80 ? item.tags.substring(0, 77) + "..." : item.tags),
-                "available sizes...",
-                item.id,
-                item.tags,
-                item.url_sq
-            ]).draw(false);
-        });
-    }
+                if (iStreamPage < data.photos.pages) {
+                    // Still loading the stream
+                    $('#pStreamInfo').text("Information on " + (iStreamPage * iStreamPerPage) + " photos loaded from a total of " + data.photos.total);
+                    setTimeout(function () { loadStream(sStream); }, 100);
+                }
+                else {
+                    // Finished loading the stream
+                    $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
+                    buildSlider();
+                }
+                $('html,body').css('cursor', 'default');
+            }
+            else {
+                $('#pStreamInfo').text("No photos found on stream");
+                $('html,body').css('cursor', 'default');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $('#pStreamInfo').text("No photos found on stream");
+            $('html,body').css('cursor', 'default');
+        }
+    });
 }
+
+
 
 // Opens the image page in a new tab
 //
