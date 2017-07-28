@@ -17,6 +17,15 @@ img.detail {
     padding-bottom: 10px;
 }
 
+img.old {
+    opacity: 0.3;
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -ms-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
+}
+
 img.thumb {
     cursor: pointer;
     filter: brightness(100%);
@@ -57,4 +66,15 @@ a.disabled {
 a.selected {
     cursor: default;
     color: black;
+}
+
+#divProgressBar {
+    width: 100%;
+    background-color: lightgrey;
+}
+
+#divProgress {
+    width: 0%;
+    height: 3px;
+    background-color: darkgreen;
 }

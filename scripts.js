@@ -11,6 +11,7 @@ var bSmallScreen = false,
     iTriggerWheel = 0,
     iTriggerResize = 0,
     iDetailSize = 0,
+    iNewDetailSize = 0,
     bDetailAttached = false;
 
 
@@ -108,6 +109,7 @@ function onPageLoad() {
     // Screen verification and initial stream
     verifySmallScreen();
     iDetailSize = bSmallScreen ? 6 : 7;
+    iNewDetailSize = iDetailSize;
     getStream($('#selectStream').val());
 }
 
@@ -244,15 +246,7 @@ function buildSlider() {
     oSlider = null;
     if (dStreamData != null) {
         $('<ul id="lightSlider"/>').appendTo('#divImages');
-        $.each(dStreamData.photos.photo, function (i, item) {
-            $('<img/>')
-                .attr('id', item.id)
-                .attr('src', bSmallScreen ? item.url_sq : item.url_q)
-                .attr('title', item.title)
-                .attr('class', "thumb")
-                .attr('onclick', "showDetail('" + item.id + "');")
-                .appendTo($('<li/>').appendTo('#lightSlider'));
-        });
+        $.each(dStreamData.photos.photo, addToSlider);
         oSlider = $('#lightSlider').lightSlider({
             slideMove: 2,
             controls: true,
@@ -265,6 +259,18 @@ function buildSlider() {
     }
 }
 
+function addToSlider(i, item) {
+    $('<img/>')
+        .attr('id', item.id)
+        .attr('src', bSmallScreen ? item.url_sq : item.url_q)
+        .attr('title', item.title)
+        .attr('class', "thumb")
+        .attr('onclick', "showDetail('" + item.id + "');")
+        .css('width', bSmallScreen ? 75 : 150)
+        .css('height', bSmallScreen ? 75 : 150)
+        .appendTo($('<li class="lslide"/>').appendTo('#lightSlider')); // Class 'lslide' needs to be added if adding to already existing slide...
+}
+
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 
@@ -275,13 +281,13 @@ function buildSlider() {
 function onDetailLoad() {
 
     $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
-    $('#imgDetail').css('opacity', '1')
+    $('#imgDetail').removeClass('old');
     $('html,body').css('cursor', 'default');
 }
 
 function changeDetail(bUp) {
 
-    iDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4.
+    iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4.
     showDetail($('#imgDetail').attr("data-id"));
 
     return false;
@@ -305,24 +311,30 @@ function setDetailSize(url, order, size) {
             break;
     }
     link.removeClass().attr("onclick", "return false;");
-    if (typeof(url) != "undefined") {
-        if (iDetailSize === order) {
+    if (typeof(url) != "undefined") { // Size exists
+        if (iNewDetailSize === order) { // Sucess, we're trying to show a size that is available
             link.attr("title", "Photo is shown in " + size).addClass('selected');
             $('html,body').css('cursor', 'wait');
-            $('#imgDetail').css('opacity', '0.6').attr("src", url);
+            $('#imgDetail').addClass('old').attr("src", url);
+            iDetailSize = iNewDetailSize;
         }
-        else {
+        else { // Size exists but we're not trying to show it
             link.attr("title", "Show photo in " + size).attr("onclick", "iDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
         }
+
+        return true;
     }
-    else {
+    else { // Size not available
         link.attr("title", "This size is not available").addClass('disabled');
+
+        return iNewDetailSize != order; // false if we're trying to show a size that is not available!
     }
 }
 
 function showDetail(sID) {
     var detail = null,
-        index = -1;
+        index = -1,
+        size = 5;
     
     if (dStreamData != null) {
         $.each(dStreamData.photos.photo, function (i, item) {
@@ -335,23 +347,34 @@ function showDetail(sID) {
         });
         
         if (index >= 0) {
+            // Image information
             $('#labelDetailTitle').html(preventEmptyTitle(detail.title));
             $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title);
             $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr("onclick", "openPhotoPage('" + detail.id + "');");
             $('#aDetailAuthor').html(detail.ownername).attr("onclick", "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
             $('#pDetailTags').html(isEmptyString(detail.tags) ? "<em>Photo without tags</em>" : "<b>Tags: </b>" + detail.tags);
-            if (typeof(detail.url_o) != "undefined") {
+            // Image sizes
+            if (typeof (detail.url_o) != "undefined") {
                 $('#OriginalIcon').attr("title", "Show original photo in new tab").attr("onclick", "detachLink('" + detail.url_o + "');").removeClass('disabled');
             }
             else {
                 $('#OriginalIcon').attr("title", "Original photo not available").attr("onclick", "return false;").addClass('disabled');
             }
-            setDetailSize(detail.url_l, 9, detail.width_l + "x" + detail.height_l);
-            setDetailSize(detail.url_c, 8, detail.width_c + "x" + detail.height_c);
-            setDetailSize(detail.url_z, 7, detail.width_z + "x" + detail.height_z);
-            setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m);
-
+            while (!(setDetailSize(detail.url_l, 9, detail.width_l + "x" + detail.height_l) && // Trying to show a size that is not available
+                     setDetailSize(detail.url_c, 8, detail.width_c + "x" + detail.height_c) &&
+                     setDetailSize(detail.url_z, 7, detail.width_z + "x" + detail.height_z) &&
+                     setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m))) {
+                if (iNewDetailSize === iDetailSize && size < 9) { // Trying to show an image with the same size as the previous one (thus, not a result of mouse wheel) AND haven't tried all sizes yet
+                    iNewDetailSize = ++size; // Then we try a new size
+                    iDetailSize = iNewDetailSize;
+                }
+                else {
+                    iNewDetailSize = iDetailSize;
+                    break;
+                }
+            }
+            // Show image
             $('#divDetail').fadeIn();
             if (oSlider != null) {
                 oSlider.goToSlide(index);

@@ -75,7 +75,12 @@
                         <a href="#" onclick="toggleFilter();" style="padding-left: 10px;">
                             <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Show stream filter"></span>
                         </a>
-                        <p id="pStreamInfo" class="pull-right" style="padding-left: 1em; padding-right: 1em; font-size: x-small;"></p>
+                        <div class="form-horizontal pull-right">
+                            <p id="pStreamInfo" style="padding-left: 1em; padding-right: 1em; font-size: x-small;"></p>
+                            <div id="divProgressBar">
+                                <div id="divProgress"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,7 +168,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <img id="imgDetail" data-simple-url="" class="detail"/>
+                    <img id="imgDetail" class="detail"/>
                 </div>
             </div>
             <div id="divDetailInfo" class="row" style="display: none;">

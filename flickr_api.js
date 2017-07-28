@@ -6,6 +6,8 @@ function getStream(sStream) {
     hideDetail();
     $('#divImages').empty();
     $('#pStreamInfo').text("Loading information from stream...");
+    $('#divProgress').css('width', '0%');
+    $('#divProgressBar').fadeIn();
     dStreamData = null;
     iStreamPage = 0;
     tStreamTable.clear();
@@ -36,17 +38,16 @@ function getStream(sStream) {
 //         "perpage": 100,
 //         "total": "500", 
 //         "photo": [
-//                  ...
+//              ...
 //              { "id": "35934516601", "owner": "66963975@N06", "secret": "b82661156b", "server": "4329", "farm": 5, "title": "Harvest Mouse", "ispublic": 1, "isfriend": 0, "isfamily": 0, 
 //                "description": { "_content": "Harvest Mouse\n\n\nFollow me - <a href=\"https:\/\/www.facebook.com\/nigelhodsonphotography\" rel=\"nofollow\">www.facebook.com\/nigelhodsonphotography<\/a>" },
 //                "ownername": "oddie25", "views": "46036", "tags": "canon 1dx 100400mmmk11 mouse harvestmouse wheat mice mammal nature naturephotography wildlife wildlifephotography wales",
-//                "url_sq": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_b82661156b_s.jpg", "height_sq": 75, "width_sq": 75,
 //                "url_m": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_b82661156b.jpg", "height_m": "500", "width_m": "382",
 //                "url_z": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_b82661156b_z.jpg", "height_z": "640", "width_z": "489",
 //                "url_c": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_b82661156b_c.jpg", "height_c": "800", "width_c": "611",
 //                "url_l": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_b82661156b_b.jpg", "height_l": "1024", "width_l": "782",
 //                "url_o": "https:\/\/farm5.staticflickr.com\/4329\/35934516601_f4898fc15f_o.jpg", "height_o": "2946", "width_o": "2250" },
-//                  ...
+//              ...
 //         ] },
 //     "stat": "ok" }
 function loadStream(sStream) {
@@ -70,22 +71,14 @@ function loadStream(sStream) {
             if (data.stat === "ok") {
                 if (iStreamPage === 1) {
                     dStreamData = data;
-                    $('#divImages').empty();
+                    buildSlider(); // Builds a slider with the first page...
                 }
                 else {
+                    // Add to slider
+                    $.each(data.photos.photo, addToSlider);
+                    oSlider.refresh();
+                    // Add photos to stream
                     $.merge(dStreamData.photos.photo, data.photos.photo);
-                }
-
-                // Shows the first image of the first 5 stream pages
-                if (iStreamPage < 6) {
-                    $('<img/>')
-                        .attr('id', data.photos.photo[0].id)
-                        .attr('src', bSmallScreen ? data.photos.photo[0].url_sq : data.photos.photo[0].url_q)
-                        .attr('title', data.photos.photo[0].title)
-                        .attr('class', "thumb")
-                        .attr('onclick', "showDetail('" + data.photos.photo[0].id + "');")
-                        .appendTo('#divImages');
-                    $('<span/>').attr("style", "padding-left: 10px;").appendTo('#divImages');
                 }
 
                 // Add new stream data to search table
@@ -101,28 +94,35 @@ function loadStream(sStream) {
                     ]).draw(false);
                 });
 
-                if (iStreamPage < data.photos.pages) {
-                    // Still loading the stream
-                    $('#pStreamInfo').text("Information on " + (iStreamPage * iStreamPerPage) + " photos loaded from a total of " + data.photos.total);
-                    setTimeout(function () { loadStream(sStream); }, 100);
+                $('#divProgress').css('width', ((iStreamPage / data.photos.pages) * 100) + '%');
+                if (iStreamPage < data.photos.pages) { // Still loading the stream
+                    $('#pStreamInfo').text("Loaded information on " + (iStreamPage * iStreamPerPage) + " photos from " + data.photos.total);
+                    setTimeout(function () { loadStream(sStream); });
                 }
                 else {
-                    // Finished loading the stream
-                    $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
-                    buildSlider();
+                    finishStream();
                 }
-                $('html,body').css('cursor', 'default');
             }
             else {
-                $('#pStreamInfo').text("No photos found on stream");
-                $('html,body').css('cursor', 'default');
+                finishStream();
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $('#pStreamInfo').text("No photos found on stream");
-            $('html,body').css('cursor', 'default');
+            finishStream();
         }
     });
+}
+
+function finishStream() {
+
+    if (dStreamData != null) {
+        $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
+    }
+    else {
+        $('#pStreamInfo').text("No photos found on stream");
+    }
+    $('#divProgressBar').fadeOut();
+    $('html,body').css('cursor', 'default');
 }
 
 
