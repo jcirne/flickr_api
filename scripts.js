@@ -319,7 +319,7 @@ function setDetailSize(url, order, size) {
             iDetailSize = iNewDetailSize;
         }
         else { // Size exists but we're not trying to show it
-            link.attr("title", "Show photo in " + size).attr("onclick", "iDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
+            link.attr("title", "Show photo in " + size).attr("onclick", "iNewDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
         }
 
         return true;
