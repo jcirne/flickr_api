@@ -11,6 +11,21 @@ tbody tr {
     cursor: pointer;
 }
 
+div.header {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 80px;
+    padding-right: 15px;
+    border-bottom: 1px solid darkorange;
+}
+
+label.header {
+    font: bold 16pt/normal Arial;
+    color: darkorange;
+    font-size-adjust: none;
+    font-stretch: normal;
+}
+
 img.detail {
     padding-left: 10px;
     padding-right: 10px;

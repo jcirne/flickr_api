@@ -51,10 +51,10 @@
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Title and filter control -->
         <div>
-            <div class="row" style="padding-top: 10px; padding-bottom: 5px; padding-left: 80px; padding-right: 15px; border-bottom:1px solid darkorange;">
+            <div class="row header">
                 <div class="col-sm-12">
-                    <label style="font: bold 16pt/normal Arial; color: darkorange; font-size-adjust: none; font-stretch: normal;">flickr [api]</label>
-                    <div class="pull-right" onclick="showAbout();" title="About Flickr[api]">
+                    <label class="header">flickr [api]</label>
+                    <div class="pull-right" onclick="showAbout();" title="About flickr [api]">
                         <a href="#" onclick="showAbout();"><span class="glyphicon glyphicon-question-sign" style="padding-top: 5px;"></span></a>
                         <label class="control-label">&nbsp; About &nbsp;</label>
                     </div>
@@ -105,6 +105,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
+                            <!-- The stream table header and footer need definitions for the searchable information. The actual table can, and will, have more columns.-->
                             <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
@@ -112,7 +113,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -123,7 +123,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                     </tr>

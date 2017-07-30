@@ -60,14 +60,26 @@ function onPageLoad() {
         setTimeout(function () {
             iTriggerWheel--;
             if (iTriggerWheel === 0) {
-                if (typeof(e.originalEvent.wheelDelta) != "undefined") {
-                    changeDetail(e.originalEvent.wheelDelta > 0); // Chrome and Edge
-                }
-                else {
-                    changeDetail(e.originalEvent.detail < 0); // Firefox
-                }
+                changeDetail(mouseWheelUp(e));
             }
         });
+    });
+    // Set slider mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
+    $('#divImages').bind('wheel mousewheel DOMMouseScroll', function (e) {
+        if (oSlider != null) {
+            iTriggerWheel++;
+            setTimeout(function () {
+                iTriggerWheel--;
+                if (iTriggerWheel === 0) {
+                    if (mouseWheelUp(e)) {
+                        oSlider.goToNextSlide();
+                    }
+                    else {
+                        oSlider.goToPrevSlide();
+                    }
+                }
+            });
+        }
     });
  
     // Chosen and change event
@@ -100,7 +112,7 @@ function onPageLoad() {
     });
     $('#tableStreamTable tbody').on('click', 'tr', function () {
         hideFilter();
-        showDetail(tStreamTable.row(this).data()[4]);
+        oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[4]));
         if (!bDetailAttached) {
             toggleAttach();
         }
@@ -154,6 +166,16 @@ function verifySmallScreen() {
         if (oSlider != null) {
             oSlider.refresh();
         }
+    }
+}
+
+function mouseWheelUp(event) {
+
+    if (typeof(event.originalEvent.wheelDelta) != "undefined") {
+        return event.originalEvent.wheelDelta > 0; // Chrome and Edge
+    }
+    else {
+        return event.originalEvent.detail < 0; // Firefox
     }
 }
 
@@ -288,9 +310,8 @@ function onDetailLoad() {
 function changeDetail(bUp) {
 
     iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4.
-    showDetail($('#imgDetail').attr("data-id"));
-
-    return false;
+    
+    return showDetail($('#imgDetail').attr("data-id"));
 }
 
 function setDetailSize(url, order, size) {
@@ -376,13 +397,10 @@ function showDetail(sID) {
             }
             // Show image
             $('#divDetail').fadeIn();
-            if (oSlider != null) {
-                oSlider.goToSlide(index);
-            }
         }
     }
 
-    return false;
+    return index;
 }
 
 function hideDetail(bInstant) {
