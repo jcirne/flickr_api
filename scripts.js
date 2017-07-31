@@ -10,6 +10,7 @@ var bSmallScreen = false,
     fFilter = "",
     iTriggerWheel = 0,
     iTriggerResize = 0,
+    iTriggerThumb = 0,
     iDetailSize = 0,
     iNewDetailSize = 0,
     bDetailAttached = false;
@@ -225,19 +226,19 @@ function toggleFilter() {
 // Thumbnail functions
 
 // Show thumbnail image over table cell
-function showThumb(iThumbIndex) {
+function showThumb(x, y, iThumbIndex) {
 
+    iTriggerThumb++;
     setTimeout(function () {
-        if ($('#divThumb:visible').length == 0) {
-            var oThumb = $('#thumb_' + iThumbIndex),
-                oContainerPos = $('#divFilter').position(),
-                oThumbPos = oThumb.position();
-
-            $('#imgThumb').attr("src", oThumb.attr("data-square-url"));
-            $('#divThumb').css('left', oContainerPos.left + oThumbPos.left + oThumb.width() + 40).css('top', oContainerPos.top + oThumbPos.top + 20).fadeIn();
+        iTriggerThumb--;
+        if (iTriggerThumb === 0) {
+            if ($('#imgThumb').attr("src") != $('#thumb_' + iThumbIndex).attr("data-square-url")) {
+                $('#imgThumb').attr("src", $('#thumb_' + iThumbIndex).attr("data-square-url"));
+            }
+            $('#divThumb').css('left', x + 40).css('top', y).fadeIn();
         }
-    });
-
+    }, 50);
+    
     return false;
 }
 
@@ -250,6 +251,7 @@ function hideThumb(bInstant) {
         $('#divThumb').fadeOut();
     }
     $('#imgThumb').attr("src", "//:0").css('width', 75).css('height', 75);
+    iTriggerThumb = 0;
 
     return false;
 }

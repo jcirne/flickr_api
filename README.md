@@ -28,7 +28,7 @@ It uses a lazy load, fetching 100 photos at a time, and updating the stream slid
 Selecting another stream will discard the current one and start loading the new one
 
 ### Slider
-To move the slider use the arrow keys, the mouse wheel or drag on of the photo thumbnails
+To move the slider use the the mouse wheel, arrow keys, navigation icons or drag on of the photo thumbnails
 
 Clicking a thumb will open the photo detail box
 
@@ -49,7 +49,8 @@ Clicking on the arrow after the selected stream will show the search table. This
 
 On the upper right a search text box exists that will search all the stream images with any text contained in the description, tags, author name or photo title
 
-* Moving the mouse over the photo title will show a small tooltip like thumbnail of it
+* Clicking the column header will order the contents on the table
+* Moving the mouse over the photo title will show a small thumbnail of the photo
 * Clicking on a row will close the search table and dispaly a pined detail box of the photo
 
 ### About box
