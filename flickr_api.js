@@ -5,6 +5,7 @@ function getStream(sStream) {
 
     hideDetail();
     $('#divImages').empty();
+    $('#divStream').css('cursor', 'wait');
     $('#pStreamInfo').text("Loading information from stream...");
     $('#divProgress').css('width', '0%');
     $('#divProgressBar').fadeIn();
@@ -57,7 +58,6 @@ function getStream(sStream) {
 //     "stat": "ok" }
 function loadStream(sStream) {
     
-    $('html,body').css('cursor', 'wait');
     iStreamPage++;
     $.ajax({
         url: 'https://api.flickr.com/services/rest/',
@@ -127,7 +127,7 @@ function finishStream() {
         $('#pStreamInfo').text("No photos found on stream");
     }
     $('#divProgressBar').fadeOut();
-    $('html,body').css('cursor', 'default');
+    $('#divStream').css('cursor', 'default');
 }
 
 
@@ -157,7 +157,6 @@ function finishStream() {
 //     "stat": "ok" }
 function openPhotoPage(sID) {
 
-    $('html,body').css('cursor', 'wait');
     $.ajax({
         url: 'https://api.flickr.com/services/rest/',
         data: {
@@ -173,10 +172,6 @@ function openPhotoPage(sID) {
             if (data.stat === "ok" && data.photo.urls.url.length > 0 ) {
                 detachLink(data.photo.urls.url[0]._content.replace(/\\/g, ''));
             }
-            $('html,body').css('cursor', 'default');
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $('html,body').css('cursor', 'default');
         }
     });
 }

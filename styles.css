@@ -39,6 +39,7 @@ img.old {
     -ms-transition: opacity 1s ease-in-out;
     -o-transition: opacity 1s ease-in-out;
     transition: opacity 1s ease-in-out;
+    cursor: wait;
 }
 
 img.thumb {

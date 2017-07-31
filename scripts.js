@@ -30,7 +30,6 @@ function onPageLoad() {
             }
             hideFilter();
             hideThumb();
-            $('html,body').css('cursor', 'default');
         }
         // if (event.keyCode === 13) {
         //    event.preventDefault();
@@ -305,7 +304,6 @@ function onDetailLoad() {
 
     $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
     $('#imgDetail').removeClass('old');
-    $('html,body').css('cursor', 'default');
 }
 
 function changeDetail(bUp) {
@@ -336,7 +334,6 @@ function setDetailSize(url, order, size) {
     if (typeof(url) != "undefined") { // Size exists
         if (iNewDetailSize === order) { // Sucess, we're trying to show a size that is available
             link.attr("title", "Photo is shown in " + size).addClass('selected');
-            $('html,body').css('cursor', 'wait');
             $('#imgDetail').addClass('old').attr("src", url);
             iDetailSize = iNewDetailSize;
         }
