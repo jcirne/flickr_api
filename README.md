@@ -1,0 +1,80 @@
+# flickr [api]
+Single page app using the public flickr api
+
+[flickr [api]](http://leiloes.cfportugal.pt/flickr_api/) - See online
+
+## Prerequisites
+The complete prerequisites come from [this developer flickr task](https://github.com/holidayextras/culture/blob/master/recruitment/developer-flickr-task.md) by Holiday Extras
+
+The interpretation and design decisions regarding the requisites for this app can differ slightly from what was asked as follows:
+### Use the public flickr api to display public photos on a single page app
+Instead of the public feed as suggested, this app uses some of the api public methods in a stream like manner to show a slider of photo thumbnails 
+
+### For each photo, show title, author, description and tags
+The thumbs in the slider are links to the photo detail. This detail is a minimalist view with bigger image sizes showing only the photo title and action icons. Author, description and tags can be shown by selecting the eye icon
+
+## Using the app
+Open the file "index.html" in any modern browser
+
+* This app is responsive and will react accordingly to a window resize. When the screen is/becomes very small, further adaptations are made like reducing the thumbnails size on the slider and hidding some labels
+* Esc key will close any opened boxes (About, Detail or Search table)
+* Most *ui* elements will show some tooltip information
+
+### Selected stream
+The default stream starts loading upon opening the app
+
+It uses a lazy load, fetching 100 photos at a time, and updating the stream slider and search table as the photos are loaded as shown on the progress bar
+
+Selecting another stream will discard the current one and start loading the new one
+
+### Slider
+To move the slider use the arrow keys, the mouse wheel or drag on of the photo thumbnails
+
+Clicking a thumb will open the photo detail box
+
+### Detail box
+Clean and minimal photo information and higher resolutions are shown here
+
+When photo information is visible, it will appear under the image with the author name linking to the author page on flickr and the image title linking to the image page on flickr
+
+* Mouse wheel used over the image will jump to the next ou previous available size
+* Available sizes can be selected on the different sized box like icons
+* When available, the original photo can be seen in a new tab by clicking the picture icon
+* Toggle photo information by clicking the eye icon
+* Pin or unpin the box to the main page
+* The box is draggable on the title area when unpinned
+
+### Search table
+Clicking on the arrow after the selected stream will show the search table. This table shows the photo title, author name and tags, but has other searchable hidden information like description or complete tag list
+
+On the upper right a search text box exists that will search all the stream images with any text contained in the description, tags, author name or photo title
+
+* Moving the mouse over the photo title will show a small tooltip like thumbnail of it
+* Clicking on a row will close the search table and dispaly a pined detail box of the photo
+
+### About box
+Shows basic information on this app and has links that open in new tabs to the frameworks and tools used
+
+The about box is draggable on the title area and can be shown by clicking the question mark icon or the word "About"
+
+### ToDo(s)
+* Slider Play/Pause
+* Lazy load on hidden image render in the slider
+
+## Deployment
+Only the four files in the project root are needed to run the app
+
+## Built With
+* [jQuery](https://jquery.com/)
+* [jQuery UI](https://jqueryui.com/)
+* [Bootstrap](http://getbootstrap.com/)
+* [Datatables](https://datatables.net/)
+* [Choosen](https://harvesthq.github.io/chosen/)
+* [lightSlider](http://sachinchoolur.github.io/lightslider/)
+* [flickr App Garden](https://www.flickr.com/services/api/)
+
+## Author
+[**Jorge Cirne** (jcirne)](https://github.com/jcirne)
+
+## License
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT)
