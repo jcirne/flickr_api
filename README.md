@@ -77,4 +77,4 @@ Only the four files in the project root are needed to run the app
 [**Jorge Cirne** (jcirne)](https://github.com/jcirne)
 
 ## License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT)
+This app is licensed under the [MIT License](https://opensource.org/licenses/MIT)
