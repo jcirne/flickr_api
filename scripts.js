@@ -250,7 +250,7 @@ function hideThumb(bInstant) {
     else {
         $('#divThumb').fadeOut();
     }
-    $('#imgThumb').attr("src", "//:0");
+    $('#imgThumb').attr("src", "//:0").css('width', 75).css('height', 75);
 
     return false;
 }
@@ -282,6 +282,7 @@ function buildSlider() {
 }
 
 function addToSlider(i, item) {
+
     $('<img/>')
         .attr('id', item.id)
         .attr('src', bSmallScreen ? item.url_sq : item.url_q)

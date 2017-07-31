@@ -65,7 +65,7 @@
                 <div class="col-sm-10">
                     <div class="form-group">
                         <label id="labelStream" class="control-label" style="padding-right: 10px;">Stream:</label>
-                        <select id="selectStream" class="simple-select">
+                        <select id="selectStream" class="simple-select" title="Chose a different stream">
                             <option value="flickr.photos.search">All Photos</option>
                             <option value="flickr.interestingness.getList" selected>Interesting Photos</option>
                             <option value="flickr.photos.getPopular">Popular Photos</option>
@@ -138,7 +138,7 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Image thumbnail -->
-        <div id="divThumb" class="border-thin" style="display: none; position: absolute; z-index: 3; background-color: rgba(250, 250, 250, 1);">
+        <div id="divThumb" class="border-thin" style="display: none; position: absolute; z-index: 3;">
             <img id="imgThumb" />
         </div>
 
@@ -192,7 +192,7 @@
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- About -->
         <div id="divAboutProtector" style="display: none; position: absolute; z-index: 3; background-color: rgba(255, 255, 255, 0.8);">
-            <div id="divAbout" class="border-thin" style="display: none; position: absolute; z-index: 2; background-color: rgba(250, 250, 250, 1);">
+            <div id="divAbout" class="border-thin" style="display: none; position: absolute; background-color: rgba(250, 250, 250, 1);">
                 <div id="divAboutHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; cursor: move;">
                     <div class="col-sm-12">
                         <div class="form-group">
@@ -207,10 +207,10 @@
                     <div class="col-sm-1"></div>
                     <div class="col-sm-10">
                         <p class="text-justify">
-                            Welcome to this single page app example that uses the flickr api to show a few skills in front-end development.
+                            Welcome to this single page app example using the public flickr api. It applies some front-end development technics to display and search photo information.
                         </p>
                         <p class="text-justify">
-                            Reference for the frameworks and tools used:
+                            Built with:
                         </p>
                     </div>
                 </div>
