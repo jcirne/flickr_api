@@ -43,6 +43,7 @@ When photo information is visible, it will appear under the image with the autho
 * Toggle photo information by clicking the eye icon
 * Pin or unpin the box to the main page
 * The box is draggable on the title area when unpinned
+* Double click the photo to find it on the slider
 
 ### Search table
 Clicking on the arrow after the selected stream will show the search table. This table shows the photo title, author name and tags, but has other searchable hidden information like description or complete tag list

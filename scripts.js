@@ -1,19 +1,19 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Global variables
 'use strict';
-var bSmallScreen = false,
-    dStreamData = null,
-    iStreamPage = 0,
-    iStreamPerPage = 100,
-    tStreamTable,
-    oSlider = null,
-    fFilter = "",
+var bSmallScreen = false, // Small screen mode
+    dStreamData = null, // All the photo information returned from flickr api
+    sLastStream = "", // Last requested stream
+    iStreamPage = 0, // Stream loading control - current loaded page
+    iStreamPerPage = 100, // Stream loading control - number of photos per page
+    tStreamTable, // Photo search table object
+    oSlider = null, // Photo slider object
     iTriggerWheel = 0, // Deal with multiple wheel events
     iTriggerResize = 0, // Deal with multiple resize events
     iTriggerThumb = 0, // Deal with multiple thumb events
-    iDetailSize = 0,
-    iNewDetailSize = 0,
-    bDetailAttached = false;
+    iDetailSize = 0, // Current detail size
+    iNewDetailSize = 0, // Intended detail size
+    bDetailAttached = false; // Photo detail state - Attached to page
 
 
 
@@ -37,15 +37,15 @@ function onPageLoad() {
     // Window resize event
     $(window).resize(function () {
         iTriggerResize++;
-        if (iTriggerResize === 1) {
+        if (iTriggerResize === 1) { // Close all boxes
             hideDetail(true);
             hideAbout(true);
             hideFilter(true);
         }
         setTimeout(function () {
             iTriggerResize--;
-            if (iTriggerResize === 0) {
-                verifySmallScreen(); // Only called once if many events trigger in a row...
+            if (iTriggerResize === 0) { // Only called once if many events trigger in a row...
+                verifySmallScreen();
             }
         });
     });
@@ -55,7 +55,7 @@ function onPageLoad() {
         iTriggerWheel++;
         setTimeout(function () {
             iTriggerWheel--;
-            if (iTriggerWheel === 0) {
+            if (iTriggerWheel === 0) { // Only called once if many events trigger in a row...
                 changeDetail(mouseWheelUp(e));
             }
         });
@@ -66,7 +66,7 @@ function onPageLoad() {
             iTriggerWheel++;
             setTimeout(function () {
                 iTriggerWheel--;
-                if (iTriggerWheel === 0) {
+                if (iTriggerWheel === 0) { // Only called once if many events trigger in a row...
                     if (mouseWheelUp(e)) {
                         oSlider.goToNextSlide();
                     }
@@ -93,11 +93,12 @@ function onPageLoad() {
     });
 
     // Draggable divs
-    // TODO JC
-    //$('#divDetail').draggable({ handle: '#divDetailHead' });
-    $('#divAbout').draggable({ handle: '#divAboutHead' });
+    //$('#divDetail').draggable({ handle: '#divDetailHead' }); // TODO JC (turned off because of css transformation effect, needs another solution to see mouse movement on the drag function)
+    $('#divAbout').draggable({
+        handle: '#divAboutHead'
+    });
 
-    // DataTable creation and onclick event in rows
+    // DataTable creation
     tStreamTable = $('#tableStreamTable').DataTable({
         pageLength: 5,
         columnDefs: [
@@ -106,6 +107,7 @@ function onPageLoad() {
         ],
         dom: 'rftip'
     });
+    // DataTable onclick event in rows
     $('#tableStreamTable tbody').on('click', 'tr', function () {
         hideFilter();
         oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[4]));
@@ -118,6 +120,9 @@ function onPageLoad() {
     verifySmallScreen();
     iDetailSize = bSmallScreen ? 6 : 7;
     iNewDetailSize = iDetailSize;
+
+    // Initialize thumb with empty image
+    hideThumb(true);
 
     // Load default stream
     getStream($('#selectStream').val());
@@ -145,6 +150,19 @@ function isEmptyString(str) {
 function preventEmptyTitle(sTitle) {
 
     return (isEmptyString(sTitle) ? "<em><small>photo without title<small></em>" : sTitle)
+}
+
+// Crops big strings that can have html stripping then into plain text in those cases
+function smartString(sHtmlText) {
+    var plainText = $('<div/>').html(sHtmlText).text(),
+        maxSize = bSmallScreen ? 50 : 100;
+    
+    if (plainText.length > maxSize) {
+        return plainText.substring(0, maxSize) + "...";
+    }
+    else {
+        return sHtmlText;
+    }
 }
 
 function verifySmallScreen() {
@@ -263,13 +281,14 @@ function hideThumb(bInstant) {
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Slider functions
 
+// Builds (or rebuilds) the slider object
 function buildSlider() {
 
     $('#divImages').empty();
     oSlider = null;
     if (dStreamData != null) {
         $('<ul id="lightSlider"/>').appendTo('#divImages');
-        $.each(dStreamData.photos.photo, addToSlider);
+        $.each(dStreamData.photos.photo, addToSlider); // Add all photos in stream to the slider structure
         oSlider = $('#lightSlider').lightSlider({
             slideMove: 2,
             controls: true,
@@ -310,12 +329,13 @@ function onDetailLoad() {
 
 function changeDetail(bUp) {
 
-    iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4.
+    iNewDetailSize = bUp ? Math.min(iDetailSize + 1, 9) : Math.max(iDetailSize - 1, 6); // There are 10 possible sizes, but we're only using 4
     
     return showDetail($('#imgDetail').attr("data-id"));
 }
 
-function setDetailSize(url, order, size) {
+// The 'order' represents the sizes returned by flickr api (10 possible sizes/urls). Here we're only interested in the four sizes below the original
+function setDetailSize(url, order, sizeX, sizeY) {
     var link;
 
     switch (order) {
@@ -335,12 +355,12 @@ function setDetailSize(url, order, size) {
     link.removeClass().attr("onclick", "return false;");
     if (typeof(url) != "undefined") { // Size exists
         if (iNewDetailSize === order) { // Sucess, we're trying to show a size that is available
-            link.attr("title", "Photo is shown in " + size).addClass('selected');
-            $('#imgDetail').addClass('old').attr("src", url);
+            link.attr("title", "Photo is shown in " + sizeX + "x" + sizeY).addClass('selected');
+            $('#imgDetail').addClass('old').attr("src", url); // Show the image
             iDetailSize = iNewDetailSize;
         }
         else { // Size exists but we're not trying to show it
-            link.attr("title", "Show photo in " + size).attr("onclick", "iNewDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
+            link.attr("title", "Show photo in " + sizeX + "x" + sizeY).attr("onclick", "iNewDetailSize = " + order + "; showDetail($('#imgDetail').attr('data-id'));");
         }
 
         return true;
@@ -358,6 +378,7 @@ function showDetail(sID) {
         size = 5;
     
     if (dStreamData != null) {
+        // Find photo in stream data
         $.each(dStreamData.photos.photo, function (i, item) {
             if (item.id == sID) {
                 detail = item;
@@ -366,26 +387,26 @@ function showDetail(sID) {
                 return false;
             }
         });
-        
+        // Show photo
         if (index >= 0) {
             // Image information
-            $('#labelDetailTitle').html(preventEmptyTitle(detail.title));
-            $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title);
+            $('#labelDetailTitle').html(smartString(preventEmptyTitle(detail.title)));
+            $('#imgDetail').attr("data-id", detail.id).attr("title", detail.title).attr("ondblclick", "oSlider.goToSlide(" + index + ");");
             $('#aDetailTitle').html(preventEmptyTitle(detail.title)).attr("onclick", "openPhotoPage('" + detail.id + "');");
             $('#aDetailAuthor').html(detail.ownername).attr("onclick", "detachLink('https://www.flickr.com/people/" + detail.owner + "/');");
             $('#pDetailDescription').html(detail.description._content);
             $('#pDetailTags').html(isEmptyString(detail.tags) ? "<em>Photo without tags</em>" : "<b>Tags: </b>" + detail.tags);
             // Image sizes
-            if (typeof (detail.url_o) != "undefined") {
+            if (typeof(detail.url_o) != "undefined") {
                 $('#OriginalIcon').attr("title", "Show original photo in new tab").attr("onclick", "detachLink('" + detail.url_o + "');").removeClass('disabled');
             }
             else {
                 $('#OriginalIcon').attr("title", "Original photo not available").attr("onclick", "return false;").addClass('disabled');
             }
-            while (!(setDetailSize(detail.url_l, 9, detail.width_l + "x" + detail.height_l) && // Trying to show a size that is not available
-                     setDetailSize(detail.url_c, 8, detail.width_c + "x" + detail.height_c) &&
-                     setDetailSize(detail.url_z, 7, detail.width_z + "x" + detail.height_z) &&
-                     setDetailSize(detail.url_m, 6, detail.width_m + "x" + detail.height_m))) {
+            while (!(setDetailSize(detail.url_l, 9, detail.width_l, detail.height_l) && // Trying to show a size that is not available
+                     setDetailSize(detail.url_c, 8, detail.width_c, detail.height_c) &&
+                     setDetailSize(detail.url_z, 7, detail.width_z, detail.height_z) &&
+                     setDetailSize(detail.url_m, 6, detail.width_m, detail.height_m))) {
                 if (iNewDetailSize === iDetailSize && size < 9) { // Trying to show an image with the same size as the previous one (thus, not a result of mouse wheel) AND haven't tried all sizes yet
                     iNewDetailSize = ++size; // Then we try a new size
                     iDetailSize = iNewDetailSize;
@@ -415,6 +436,7 @@ function hideDetail(bInstant) {
     return false;
 }
 
+// Pin icon behavior
 function toggleAttach() {
 
     $('#divDetail').hide();
@@ -432,6 +454,7 @@ function toggleAttach() {
     $('#divDetail').fadeIn();
 }
 
+// Eye icon behavior
 function toggleImageInfo() {
 
     if ($('#divDetailInfo:visible').length > 0) {
@@ -462,6 +485,7 @@ function isDetailDetached() {
 function showAbout() {
 
     if ($('#divAbout:visible').length === 0) {
+        // Calculate size and position at the page center
         var docWidth = $(document).width(),
             divWidth = Math.min(400, docWidth),
             divX = (docWidth / 2) - (divWidth / 2),

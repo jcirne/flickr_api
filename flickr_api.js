@@ -4,6 +4,7 @@
 function getStream(sStream) {
 
     hideDetail();
+    hideFilter();
     $('#divImages').empty();
     $('#divStream').css('cursor', 'wait');
     $('#pStreamInfo').text("Loading information from stream...");
@@ -12,6 +13,7 @@ function getStream(sStream) {
     dStreamData = null;
     iStreamPage = 0;
     tStreamTable.clear();
+    sLastStream = sStream; // Last requested stream
     loadStream(sStream);
 }
 
@@ -74,38 +76,42 @@ function loadStream(sStream) {
         cache: false,
         success: function (data, textStatus, jqXHR) {
             if (data.stat === "ok") {
-                if (iStreamPage === 1) {
-                    dStreamData = data;
-                    buildSlider(); // Builds a slider with the first page...
-                }
-                else {
-                    // Add to slider
-                    $.each(data.photos.photo, addToSlider);
-                    oSlider.refresh();
-                    // Add photos to stream
-                    $.merge(dStreamData.photos.photo, data.photos.photo);
-                }
+                if (sLastStream === sStream) { // Changing the stream while the previous one is still loading will result in old requests finishing. Do nothing in these cases
+                    if (iStreamPage === 1) {
+                        dStreamData = data;
+                        buildSlider(); // Builds a slider with the first page...
+                    }
+                    else {
+                        // Add photos to slider
+                        $.each(data.photos.photo, addToSlider);
+                        oSlider.refresh();
+                        // Add photos to stream
+                        $.merge(dStreamData.photos.photo, data.photos.photo);
+                    }
 
-                // Add new stream data to search table
-                $.each(data.photos.photo, function (i, item) {
-                    tStreamTable.row.add([
-                        "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
-                        item.ownername,
-                        item.description._content,
-                        (item.tags.length > 80 ? item.tags.substring(0, 77) + "..." : item.tags),
-                        item.id,
-                        item.tags,
-                        item.url_sq
-                    ]).draw(false);
-                });
+                    // Add new stream data to search table
+                    $.each(data.photos.photo, function (i, item) {
+                        tStreamTable.row.add([
+                            "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + smartString(preventEmptyTitle(item.title)) + "</span>",
+                            smartString(item.ownername),
+                            smartString(item.description._content),
+                            smartString(item.tags),
+                            item.id,
+                            item.title,
+                            item.ownername,
+                            item.description._content,
+                            item.tags
+                        ]).draw(false);
+                    });
 
-                $('#divProgress').css('width', ((iStreamPage / data.photos.pages) * 100) + '%');
-                if (iStreamPage < data.photos.pages) { // Still loading the stream
-                    $('#pStreamInfo').text("Loaded information on " + (iStreamPage * iStreamPerPage) + " photos from " + data.photos.total);
-                    setTimeout(function () { loadStream(sStream); });
-                }
-                else {
-                    finishStream();
+                    $('#divProgress').css('width', ((iStreamPage / data.photos.pages) * 100) + '%');
+                    if (iStreamPage < data.photos.pages) { // Still loading the stream
+                        $('#pStreamInfo').text("Loaded information on " + (iStreamPage * iStreamPerPage) + " photos from " + data.photos.total);
+                        setTimeout(function () { loadStream(sStream); });
+                    }
+                    else {
+                        finishStream();
+                    }
                 }
             }
             else {
@@ -113,6 +119,7 @@ function loadStream(sStream) {
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
+            iStreamPage = 0;
             finishStream();
         }
     });
@@ -134,7 +141,7 @@ function finishStream() {
 
 // Opens the image page in a new tab
 //
-// api response example:
+// Output "data" example:
 // {   "photo": { "id": "36083308015", "secret": "0e438221d6", "server": "4309", "farm": 5, "dateuploaded": "1500724244", "isfavorite": 0, "license": 0, "safety_level": 0, "rotation": 0, 
 //     "owner": { "nsid": "46170864@N02", "username": "Melissa James Photography", "realname": "", "location": "", "iconserver": "4036", "iconfarm": 5, "path_alias": "melissa_vet" }, 
 //     "title": { "_content": "Headliner" }, 
