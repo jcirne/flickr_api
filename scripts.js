@@ -8,9 +8,9 @@ var bSmallScreen = false,
     tStreamTable,
     oSlider = null,
     fFilter = "",
-    iTriggerWheel = 0,
-    iTriggerResize = 0,
-    iTriggerThumb = 0,
+    iTriggerWheel = 0, // Deal with multiple wheel events
+    iTriggerResize = 0, // Deal with multiple resize events
+    iTriggerThumb = 0, // Deal with multiple thumb events
     iDetailSize = 0,
     iNewDetailSize = 0,
     bDetailAttached = false;
@@ -22,7 +22,7 @@ var bSmallScreen = false,
 
 function onPageLoad() {
 
-    // Esc and Enter keys event
+    // Esc key event
     $(document).keydown(function (event) {
         if (event.keyCode === 27) {
             hideAbout();
@@ -32,10 +32,6 @@ function onPageLoad() {
             hideFilter();
             hideThumb();
         }
-        // if (event.keyCode === 13) {
-        //    event.preventDefault();
-        //    event.stopImmediatePropagation();
-        // }
     });
 
     // Window resize event
@@ -91,7 +87,7 @@ function onPageLoad() {
         getStream($('#selectStream').val());
     });
 
-    // Set image load behaviour
+    // Set image detail load behaviour
     $('#imgDetail').on('load', function () {
         onDetailLoad();
     });
@@ -118,10 +114,12 @@ function onPageLoad() {
         }
     });
 
-    // Screen verification and initial stream
+    // Screen size verification
     verifySmallScreen();
     iDetailSize = bSmallScreen ? 6 : 7;
     iNewDetailSize = iDetailSize;
+
+    // Load default stream
     getStream($('#selectStream').val());
 }
 
@@ -191,7 +189,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown();
+    $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown(); // Hugly hard codded calculations!
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -230,12 +228,14 @@ function showThumb(x, y, iThumbIndex) {
 
     iTriggerThumb++;
     setTimeout(function () {
-        iTriggerThumb--;
-        if (iTriggerThumb === 0) {
+        if (iTriggerThumb === 1) {
             if ($('#imgThumb').attr("src") != $('#thumb_' + iThumbIndex).attr("data-square-url")) {
                 $('#imgThumb').attr("src", $('#thumb_' + iThumbIndex).attr("data-square-url"));
             }
             $('#divThumb').css('left', x + 40).css('top', y).fadeIn();
+        }
+        if (iTriggerThumb > 0) { // Because a hide could be called in between
+            iTriggerThumb--;
         }
     }, 50);
     
@@ -250,7 +250,7 @@ function hideThumb(bInstant) {
     else {
         $('#divThumb').fadeOut();
     }
-    $('#imgThumb').attr("src", "//:0").css('width', 75).css('height', 75);
+    $('#imgThumb').attr("src", "//:0").css('width', 75).css('height', 75); // Avoids the previous image appearing when a new thumb is still loading
     iTriggerThumb = 0;
 
     return false;
