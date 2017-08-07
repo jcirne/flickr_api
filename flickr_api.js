@@ -77,7 +77,7 @@ function loadStream(sStream) {
         success: function (data, textStatus, jqXHR) {
             if (data.stat === "ok") {
                 if (sLastStream === sStream) { // Changing the stream while the previous one is still loading will result in old requests finishing. Do nothing in these cases
-                    if (iStreamPage === 1) {
+                    if (iStreamPage === 1 || dStreamData == null) {
                         dStreamData = data;
                         buildSlider(); // Builds a slider with the first page...
                     }
