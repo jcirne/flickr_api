@@ -73,6 +73,10 @@ div.detached {
     border: 1px solid rgb(170, 170, 170);
 }
 
+div.draggable {
+    cursor: move;
+}
+
 a.disabled {
     cursor: default;
     opacity: 0.5;

@@ -13,7 +13,8 @@ var bSmallScreen = false, // Small screen mode
     iTriggerThumb = 0, // Deal with multiple thumb events
     iDetailSize = 0, // Current detail size
     iNewDetailSize = 0, // Intended detail size
-    bDetailAttached = false; // Photo detail state - Attached to page
+    bDetailAttached = false, // Photo detail state - Attached to page
+    dragDif = { X: 0, Y: 0 };
 
 
 
@@ -93,7 +94,19 @@ function onPageLoad() {
     });
 
     // Draggable divs
-    //$('#divDetail').draggable({ handle: '#divDetailHead' }); // TODO JC (turned off because of css transformation effect, needs another solution to see mouse movement on the drag function)
+    $('#divDetail').draggable({ // This div makes special calculations because of the transform property
+        handle: '#divDetailHead',
+        start: function (event, ui) {
+            dragDif.X = event.clientX - ui.originalPosition.left;
+            dragDif.Y = event.clientY - ui.originalPosition.top;
+        },
+        drag: function (event, ui) {
+            ui.position = {
+                left: (event.clientX + ($('#divDetail').width() / 2) - dragDif.X),
+                top: (event.clientY + ($('#divDetail').height() / 2) - dragDif.Y)
+            };
+        }
+    });
     $('#divAbout').draggable({
         handle: '#divAboutHead'
     });
@@ -427,10 +440,12 @@ function showDetail(sID) {
 function hideDetail(bInstant) {
 
     if (bInstant) {
-        $('#divDetail').hide();
+        $('#divDetail').css('left', '').css('top', '').hide();
     }
     else {
-        $('#divDetail').fadeOut();
+        $('#divDetail').fadeOut(function () {
+            $('#divDetail').css('left', '').css('top', '');
+        });
     }
 
     return false;
@@ -441,12 +456,14 @@ function toggleAttach() {
 
     $('#divDetail').hide();
     if (bDetailAttached) {
-        $('#divDetail').removeClass('attached').addClass('detached');
+        $('#divDetail').removeClass('attached').addClass('detached').draggable('enable');
+        $('#divDetailHead').addClass('draggable');
         $('#AttachIcon > span').removeClass('glyphicon-new-window').addClass('glyphicon-pushpin');
         $('#AttachIcon').attr("title", "Pin to page");
     }
     else {
-        $('#divDetail').removeClass('detached').addClass('attached');
+        $('#divDetail').removeClass('detached').addClass('attached').css('left', '').css('top', '').draggable('disable');
+        $('#divDetailHead').removeClass('draggable');
         $('#AttachIcon > span').removeClass('glyphicon-pushpin').addClass('glyphicon-new-window');
         $('#AttachIcon').attr("title", "Unpin from page");
     }

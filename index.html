@@ -100,7 +100,7 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Filter -->
-        <div id="divFilter" class="border-thin" style="display: none; position: absolute; z-index: 2; background-color: rgba(245, 245, 245, 0.9); padding-top: 1.5em; padding-bottom: 0.5em;">
+        <div id="divFilter" class="border-thin" style="display: none; position: absolute; z-index: 200; background-color: rgba(245, 245, 245, 0.9); padding-top: 1.5em; padding-bottom: 0.5em;">
             <div class="row" onmouseout="hideThumb();">
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -144,7 +144,7 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Image thumbnail -->
-        <div id="divThumb" class="border-thin" style="display: none; position: absolute; z-index: 3;">
+        <div id="divThumb" class="border-thin" style="display: none; position: absolute; z-index: 300;">
             <img id="imgThumb" />
         </div>
 
@@ -152,9 +152,8 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Image detail -->
-        <div id="divDetail" class="detached" style="display: none; z-index: 1;">
-            <!--<div id="divDetailHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; cursor: move;">-->
-            <div id="divDetailHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
+        <div id="divDetail" class="detached" style="display: none; z-index: 100;">
+            <div id="divDetailHead" class="row draggable" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label id="labelDetailTitle" style="font: bold 12pt/normal Arial; padding-right: 20px;"></label>
@@ -197,9 +196,9 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- About -->
-        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 3; background-color: rgba(255, 255, 255, 0.8);">
+        <div id="divAboutProtector" style="display: none; position: absolute; z-index: 300; background-color: rgba(255, 255, 255, 0.8);">
             <div id="divAbout" class="border-thin" style="display: none; position: absolute; background-color: rgba(250, 250, 250, 1);">
-                <div id="divAboutHead" class="row" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; cursor: move;">
+                <div id="divAboutHead" class="row draggable" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
                     <div class="col-sm-12">
                         <div class="form-group">
                             <label style="font: bold 12pt/normal Arial;">About</label>
