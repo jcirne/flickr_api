@@ -14,16 +14,17 @@ tbody tr {
 div.header {
     padding-top: 10px;
     padding-bottom: 5px;
-    padding-left: 80px;
+    padding-left: 15px;
     padding-right: 15px;
     border-bottom: 1px solid darkorange;
 }
 
 label.header {
-    font: bold 16pt/normal Arial;
+    font: bold 18pt/normal Arial;
     color: darkorange;
     font-size-adjust: none;
     font-stretch: normal;
+    padding-left: 50px;
 }
 
 img.detail {
@@ -31,7 +32,6 @@ img.detail {
     padding-right: 10px;
     padding-bottom: 10px;
 }
-
 img.old {
     opacity: 0.3;
     -webkit-transition: opacity 1s ease-in-out;
@@ -47,7 +47,6 @@ img.thumb {
     filter: brightness(100%);
     border: 1px solid transparent;
 }
-
 img.thumb:hover {
     filter: brightness(110%);
     border: 1px solid gray;
@@ -63,7 +62,6 @@ div.attached {
     transform: translateX(-50%);
     border-top: 1px solid rgb(170, 170, 170);
 }
-
 div.detached {
     position: absolute;
     top: 50%;
@@ -77,15 +75,38 @@ div.draggable {
     cursor: move;
 }
 
-a.disabled {
-    cursor: default;
-    opacity: 0.5;
-    color: gray;
+.sides {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-a.selected {
+span.link.selected {
+    color: darkorange;
     cursor: default;
-    color: black;
+}
+span.link.disabled {
+    color: darkgray;
+    cursor: default;
+}
+span.link:not(.disabled):not(.selected) {
+    color: royalblue;
+    cursor: pointer;
+}
+span.link:hover:not(.disabled):not(.selected) {
+    color: darkorange;
+    -webkit-transition: color 0.5s linear;
+    -moz-transition: color 0.5s linear;
+    -ms-transition: color 0.5s linear;
+    -o-transition: color 0.5s linear;
+    transition: color 0.5s linear;
+}
+span.link:active:not(.disabled):not(.selected) {
+    opacity: 0.3;
+    -webkit-transition: opacity 0.1s ease-in-out;
+    -moz-transition: opacity 0.1s ease-in-out;
+    -ms-transition: opacity 0.1s ease-in-out;
+    -o-transition: opacity 0.1s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 }
 
 #divProgressBar {

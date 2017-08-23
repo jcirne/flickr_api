@@ -4,12 +4,11 @@
 function getStream(sStream) {
 
     hideDetail();
-    hideFilter();
     $('#divImages').empty();
     $('#divStream').css('cursor', 'wait');
     $('#pStreamInfo').text("Loading information from stream...");
     $('#divProgress').css('width', '0%');
-    $('#divProgressBar').fadeIn();
+    $('#divProgressBarRow').fadeIn();
     dStreamData = null;
     iStreamPage = 0;
     tStreamTable.clear();
@@ -133,7 +132,7 @@ function finishStream() {
     else {
         $('#pStreamInfo').text("No photos found on stream");
     }
-    $('#divProgressBar').fadeOut();
+    $('#divProgressBarRow').fadeOut();
     $('#divStream').css('cursor', 'default');
 }
 

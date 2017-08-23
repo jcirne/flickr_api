@@ -50,19 +50,29 @@
 
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- Title and filter control -->
-        <div>
-            <div class="row header">
-                <div class="col-sm-12">
-                    <label class="header">flickr [api]</label>
-                    <div class="pull-right" onclick="showAbout();" title="About flickr [api]">
-                        <a href="#" onclick="showAbout();"><span class="glyphicon glyphicon-question-sign" style="padding-top: 5px;"></span></a>
-                        <label class="control-label">&nbsp; About &nbsp;</label>
-                    </div>
-                </div>
+        <div class="row header">
+            <div class="col-sm-11">
+                <span id="spanFilterIcon" class="link glyphicon glyphicon-chevron-right" onclick="toggleFilter();" style="font-size: large;"></span>
+                <label class="header">flickr [api]</label>
             </div>
-            <div id="divStream" class="row" style="padding-top: 20px;">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Image stream -->
+        <div class="row" style="padding-top: 4em; padding-bottom: 4em;">
+            <div class="col-sm-1"></div>
+            <div id="divImages" class="col-sm-10 text-center"></div>
+        </div>
+
+
+
+        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
+        <!-- Filter -->
+        <div id="divFilter" class="border-thin" style="display: none; position: absolute; z-index: 200; background-color: rgba(245, 245, 245, 0.9); padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em;">
+            <div id="divStream" class="row">
+                <div class="col-sm-12" style="top: 10px; padding-left: 30px; padding-right: 30px;">
                     <div class="form-group">
                         <label id="labelStream" class="control-label" style="padding-right: 10px;">Stream:</label>
                         <select id="selectStream" class="simple-select" title="Chose a different stream">
@@ -71,36 +81,21 @@
                             <option value="flickr.photos.getPopular">Popular Photos</option>
                             <option value="flickr.photos.getRecent">Recent Photos</option>
                         </select>
-                        <label id="labelFilter" class="control-label" style="padding-left: 30px;">Search:</label>
-                        <a href="#" onclick="toggleFilter();" style="padding-left: 10px;">
-                            <span id="spanFilterIcon" class="glyphicon glyphicon-chevron-right" title="Show stream filter"></span>
-                        </a>
-                        <div class="form-horizontal pull-right">
-                            <p id="pStreamInfo" style="padding-left: 1em; padding-right: 1em; font-size: x-small;"></p>
-                            <div id="divProgressBar">
-                                <div id="divProgress"></div>
-                            </div>
+                        <div class="form-horizontal pull-right" onclick="showAbout();" title="About flickr [api]">
+                            <label class="control-label">About</label>
+                            <span onclick="showAbout();" class="link glyphicon glyphicon-question-sign" style="padding-top: 5px; padding-left: 10px;"></span>
                         </div>
+                        <p id="pStreamInfo" style="padding-left: 10px; padding-right: 10px; padding-top: 5px; font-size: x-small; color: grey;"></p>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-
-        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
-        <!-- Image stream -->
-        <div class="row" style="padding-top: 2em; padding-bottom: 2em;">
-            <div class="col-sm-2"></div>
-            <div id="divImages" class="col-sm-8 text-center">
+            <div id="divProgressBarRow" class="row">
+                <div class="col-sm-3" style="padding-left: 30px;">
+                    <div id="divProgressBar">
+                        <div id="divProgress"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-
-        <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
-        <!-- Filter -->
-        <div id="divFilter" class="border-thin" style="display: none; position: absolute; z-index: 200; background-color: rgba(245, 245, 245, 0.9); padding-top: 1.5em; padding-bottom: 0.5em;">
             <div class="row" onmouseout="hideThumb();">
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -158,14 +153,16 @@
                     <div class="form-group">
                         <label id="labelDetailTitle" style="font: bold 12pt/normal Arial; padding-right: 20px;"></label>
                         <div class="pull-right">
-                            <a id="url_mIcon" href="#" style="font-size: xx-small;"><span class="glyphicon glyphicon-unchecked"></span></a>
-                            <a id="url_zIcon" href="#" style="font-size: x-small;"><span class="glyphicon glyphicon-unchecked"></span></a>
-                            <a id="url_cIcon" href="#" style="font-size: smaller;"><span class="glyphicon glyphicon-unchecked"></span></a>
-                            <a id="url_lIcon" href="#"><span class="glyphicon glyphicon-unchecked"></span></a>
-                            <a id="OriginalIcon" href="#" style="padding-left: 5px;"><span class="glyphicon glyphicon-picture"></span></a>
-                            <a id="ImageInfoIcon" href="#" onclick="toggleImageInfo();" title="Show image info" style="padding-left: 20px;"><span class="glyphicon glyphicon-eye-open"></span></a>
-                            <a id="AttachIcon" href="#" onclick="toggleAttach();" title="Pin to page" style="padding-left: 10px;"><span class="glyphicon glyphicon-pushpin"></span></a>
-                            <a href="#" onclick="hideDetail();" title="Close" style="padding-left: 20px;"><span class="glyphicon glyphicon-off"></span></a>
+                            <span id="url_mIcon" href="#" style="font-size: xx-small;" class="link glyphicon glyphicon-unchecked"></span>
+                            <span id="url_zIcon" style="font-size: x-small;" class="link glyphicon glyphicon-unchecked"></span>
+                            <span id="url_cIcon" style="font-size: smaller;" class="link glyphicon glyphicon-unchecked"></span>
+                            <span id="url_lIcon" class="link glyphicon glyphicon-unchecked"></span>
+                            <span id="OriginalIcon" style="padding-left: 5px;" class="link glyphicon glyphicon-picture"></span>
+                            <span id="ImageInfoIconOpen" onclick="toggleImageInfo();" title="Show image info" style="padding-left: 20px;" class="link glyphicon glyphicon-eye-open"></span>
+                            <span id="ImageInfoIconClose" onclick="toggleImageInfo();" title="Hide image info" style="display: none; padding-left: 20px;" class="link glyphicon glyphicon-eye-close"></span>
+                            <span id="AttachIconPin" onclick="toggleAttach();" title="Pin to page" style="padding-left: 10px;" class="link glyphicon glyphicon-pushpin"></span>
+                            <span id="AttachIconUnpin" onclick="toggleAttach();" title="Unpin from page" style="display: none; padding-left: 10px;" class="link glyphicon glyphicon-new-window"></span>
+                            <span onclick="hideDetail();" title="Close" style="padding-left: 20px;" class="link glyphicon glyphicon-off"></span>
                         </div>
                     </div>
                 </div>
@@ -197,92 +194,62 @@
         <!-- »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»» -->
         <!-- About -->
         <div id="divAboutProtector" style="display: none; position: absolute; z-index: 300; background-color: rgba(255, 255, 255, 0.8);">
-            <div id="divAbout" class="border-thin" style="display: none; position: absolute; background-color: rgba(250, 250, 250, 1);">
-                <div id="divAboutHead" class="row draggable" style="padding-top: 1em; padding-left: 1em; padding-right: 1em;">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label style="font: bold 12pt/normal Arial;">About</label>
-                            <div class="pull-right" onclick="hideAbout();">
-                                <a href="#" title="Close"><span class="glyphicon glyphicon-off"></span></a>
-                            </div>
+            <div id="divAbout" class="border-thin" style="display: none; position: absolute; background-color: rgba(250, 250, 250, 1); padding-top: 15px; padding-bottom: 15px; padding-left: 15px; padding-right: 15px;">
+                <div id="divAboutHead" class="row draggable" style="padding-bottom: 10px;">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-11">
+                        <label style="font: bold 12pt/normal Arial;">flickr [api]</label>
+                        <div class="pull-right" onclick="hideAbout();" title="Close">
+                            <span class="link glyphicon glyphicon-off"></span>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-12 sides">
                         <p class="text-justify">
-                            Welcome to this single page app example using the public flickr api. Some front-end development technics are used to display and search photo information. See it on <a href="https://github.com/jcirne/flickr_api" target="_blank" title="Open in GitHub">GitHub</a>...
+                            Welcome to this single page app example using the public flickr api. Some front-end development technics are used to display and search photo information. See it on <a href="https://github.com/jcirne/flickr_api" target="_blank" title="Open in GitHub">GitHub</a>.
                         </p>
-                        <p class="text-justify">
+                    </div>
+                </div>
+                <div class="row sides">
+                    <div class="col-sm-12 sides" style="padding-top: 10px;">
+                        <p class="sides">
                             Built with:
                         </p>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('https://jquery.com/');">
-                        <a href="#" title="Open jQuery website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('https://jquery.com/');" title="Open jQuery website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">jQuery</label>[3.2.1]
                     </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">jQuery &nbsp; [3.2.1]</label>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('https://jqueryui.com/');" title="Open jQuery user interface website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">jQuery UI</label>[1.12.1]
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('https://jqueryui.com/');">
-                        <a href="#" title="Open jQuery user interface website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('http://getbootstrap.com/');" title="Open Bootstrap website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">Bootstrap</label>[3.3.7]
                     </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">jQuery UI &nbsp; [1.12.1]</label>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('https://datatables.net/');" title="Open Datatables website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">Datatables</label>[1.10.15]
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('http://getbootstrap.com/');">
-                        <a href="#" title="Open Bootstrap website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('https://harvesthq.github.io/chosen/');" title="Open Chosen website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">Choosen</label>[1.7.0]
                     </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">Bootstrap &nbsp; [3.3.7]</label>
+                    <div class="col-sm-6 sides">
+                        <span id="DetachIcon" onclick="detachLink('http://sachinchoolur.github.io/lightslider/');" title="Open lightSlider website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">lightSlider</label>[1.1.6]
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('https://datatables.net/');">
-                        <a href="#" title="Open Datatables website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
+                    <div class="col-sm-12 sides" style="padding-top: 10px;">
+                        <p class="sides">
+                            External api:
+                        </p>
                     </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">Datatables &nbsp; [1.10.15]</label>
+                    <div class="col-sm-12 sides">
+                        <span id="DetachIcon" onclick="detachLink('https://www.flickr.com/services/api/');" title="Open flickr App Garden website in new tab" class="link glyphicon glyphicon-link"></span>
+                        <label class="control-label sides">flickr App Garden</label>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('https://harvesthq.github.io/chosen/');">
-                        <a href="#" title="Open Chosen website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
-                    </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">Choosen &nbsp; [1.7.0]</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('http://sachinchoolur.github.io/lightslider/');">
-                        <a href="#" title="Open lightSlider website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
-                    </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">lightSlider &nbsp; [1.1.6]</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-1" onclick="detachLink('https://www.flickr.com/services/api/');">
-                        <a href="#" title="Open flickr App Garden website in new tab"><span id="DetachIcon" class="glyphicon glyphicon-link"></span></a>
-                    </div>
-                    <div class="col-sm-9">
-                        <label class="control-label">flickr App Garden</label>
-                    </div>
-                </div>
-                <div class="row" style="padding-bottom: 1em;">
                 </div>
             </div>
         </div>

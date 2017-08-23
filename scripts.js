@@ -220,7 +220,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', 20).css('top', 100).css('width', $(document).width() - 60).slideDown(); // Hugly hard codded calculations!
+    $('#divFilter').css('left', 20).css('top', $('div.header').height() + 38).css('width', $(document).width() - 57).slideDown(); // Hugly hard codded calculations!
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -308,8 +308,8 @@ function buildSlider() {
             pager: false,
             autoWidth: true,
             keyPress: true,
-            prevHtml: '<span class="glyphicon glyphicon-chevron-left" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>',
-            nextHtml: '<span class="glyphicon glyphicon-chevron-right" style="font-size: x-large; color: lightgray; padding-top: 2px;"></span>'
+            prevHtml: '<span class="link glyphicon glyphicon-chevron-left" style="font-size: x-large; padding-top: 2px;"></span>',
+            nextHtml: '<span class="link glyphicon glyphicon-chevron-right" style="font-size: x-large; padding-top: 2px;"></span>'
         });
     }
 }
@@ -365,7 +365,7 @@ function setDetailSize(url, order, sizeX, sizeY) {
             link = $('#url_lIcon');
             break;
     }
-    link.removeClass().attr("onclick", "return false;");
+    link.removeClass('selected').removeClass('disabled').attr("onclick", "return false;");
     if (typeof(url) != "undefined") { // Size exists
         if (iNewDetailSize === order) { // Sucess, we're trying to show a size that is available
             link.attr("title", "Photo is shown in " + sizeX + "x" + sizeY).addClass('selected');
@@ -458,14 +458,14 @@ function toggleAttach() {
     if (bDetailAttached) {
         $('#divDetail').removeClass('attached').addClass('detached').draggable('enable');
         $('#divDetailHead').addClass('draggable');
-        $('#AttachIcon > span').removeClass('glyphicon-new-window').addClass('glyphicon-pushpin');
-        $('#AttachIcon').attr("title", "Pin to page");
+        $('#AttachIconPin').show();
+        $('#AttachIconUnpin').hide();
     }
     else {
         $('#divDetail').removeClass('detached').addClass('attached').css('left', '').css('top', '').draggable('disable');
         $('#divDetailHead').removeClass('draggable');
-        $('#AttachIcon > span').removeClass('glyphicon-pushpin').addClass('glyphicon-new-window');
-        $('#AttachIcon').attr("title", "Unpin from page");
+        $('#AttachIconPin').hide();
+        $('#AttachIconUnpin').show();
     }
     bDetailAttached = !bDetailAttached;
     $('#divDetail').fadeIn();
@@ -475,13 +475,13 @@ function toggleAttach() {
 function toggleImageInfo() {
 
     if ($('#divDetailInfo:visible').length > 0) {
-        $('#ImageInfoIcon > span').removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
-        $('#ImageInfoIcon').attr("title", "Show image info");
+        $('#ImageInfoIconOpen').show();
+        $('#ImageInfoIconClose').hide();
         $('#divDetailInfo').hide();
     }
     else {
-        $('#ImageInfoIcon > span').removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
-        $('#ImageInfoIcon').attr("title", "Hide image info");
+        $('#ImageInfoIconOpen').hide();
+        $('#ImageInfoIconClose').show();
         $('#divDetailInfo').show();
         onDetailLoad();
     }
@@ -504,7 +504,7 @@ function showAbout() {
     if ($('#divAbout:visible').length === 0) {
         // Calculate size and position at the page center
         var docWidth = $(document).width(),
-            divWidth = Math.min(400, docWidth),
+            divWidth = Math.min(600, docWidth - 20),
             divX = (docWidth / 2) - (divWidth / 2),
             docHeight = $(document).height(),
             divY = (docHeight / 4);
