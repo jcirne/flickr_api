@@ -14,7 +14,8 @@ var bSmallScreen = false, // Small screen mode
     iDetailSize = 0, // Current detail size
     iNewDetailSize = 0, // Intended detail size
     bDetailAttached = false, // Photo detail state - Attached to page
-    dragDif = { X: 0, Y: 0 };
+    dragDif = { X: 0, Y: 0 },
+    boxMargin = { Margin: 20, Offset: 16}; // Offset made by some bootstrap components - Ugly!!!
 
 
 
@@ -220,7 +221,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', 20).css('top', $('div.header').height() + 38).css('width', $(document).width() - 57).slideDown(); // Hugly hard codded calculations!
+    $('#divFilter').css('left', boxMargin.Margin).css('top', $('div.header').height() + 38).css('width', $(document).width() - boxMargin.Offset - (boxMargin.Margin * 2)).slideDown(); // 38 - Ugly!!!
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -503,11 +504,11 @@ function showAbout() {
 
     if ($('#divAbout:visible').length === 0) {
         // Calculate size and position at the page center
-        var docWidth = $(document).width(),
-            divWidth = Math.min(600, docWidth - 20),
-            divX = (docWidth / 2) - (divWidth / 2),
+        var docWidth = $(document).width() - boxMargin.Offset,
+            divWidth = Math.min(600, docWidth - boxMargin.Margin),
+            divX = (docWidth - divWidth) / 2,
             docHeight = $(document).height(),
-            divY = (docHeight / 4);
+            divY = (docHeight / 6);
 
         $('#divAboutProtector').css('left', 0).css('top', 0).css('width', docWidth).css('height', docHeight).fadeIn();
         $('#divAbout').css('left', divX).css('top', divY).css('width', divWidth).slideDown();
