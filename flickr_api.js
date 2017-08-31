@@ -7,6 +7,7 @@ function getStream(sStream) {
     $('#divImages').empty();
     $('#divStream').css('cursor', 'wait');
     $('#pStreamInfo').text("Loading information from stream...");
+    $('#spanStreamInfo').text($('#selectStream > option:selected').text());
     $('#divProgress').css('width', '0%');
     $('#divProgressBarRow').fadeIn();
     dStreamData = null;
@@ -130,7 +131,8 @@ function finishStream() {
         $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
     }
     else {
-        $('#pStreamInfo').text("No photos found on stream");
+        $('#pStreamInfo,#spanStreamInfo').text("No photos found on stream");
+        tStreamTable.columns.adjust().draw(); // In case older streams with data are still loading
     }
     $('#divProgressBarRow').fadeOut();
     $('#divStream').css('cursor', 'default');

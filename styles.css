@@ -80,6 +80,11 @@ div.draggable {
     padding-right: 15px;
 }
 
+.tops {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
 span.link.selected {
     color: darkorange;
     cursor: default;
