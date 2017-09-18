@@ -92,11 +92,11 @@ function loadStream(sStream) {
                     // Add new stream data to search table
                     $.each(data.photos.photo, function (i, item) {
                         tStreamTable.row.add([
+                            item.id,
                             "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + smartString(preventEmptyTitle(item.title)) + "</span>",
                             smartString(item.ownername),
                             smartString(item.description._content),
                             smartString(item.tags),
-                            item.id,
                             item.title,
                             item.ownername,
                             item.description._content,

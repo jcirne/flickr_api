@@ -15,7 +15,7 @@ var bSmallScreen = false, // Small screen mode
     iNewDetailSize = 0, // Intended detail size
     bDetailAttached = false, // Photo detail state - Attached to page
     dragDif = { X: 0, Y: 0 },
-    boxMargin = { Margin: 20, Offset: 16}; // Offset made by some bootstrap components - Ugly!!!
+    boxMargin = 20;
 
 
 
@@ -116,7 +116,7 @@ function onPageLoad() {
     tStreamTable = $('#tableStreamTable').DataTable({
         pageLength: 5,
         columnDefs: [
-            { targets: [0, 1, 3], visible: true},
+            { targets: [1, 2, 4], visible: true},
             { targets: '_all', visible: false }
         ],
         dom: 'rftip'
@@ -124,7 +124,7 @@ function onPageLoad() {
     // DataTable onclick event in rows
     $('#tableStreamTable tbody').on('click', 'tr', function () {
         hideFilter();
-        oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[4]));
+        oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[0]));
         if (!bDetailAttached) {
             toggleAttach();
         }
@@ -221,7 +221,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', boxMargin.Margin).css('top', $('div.header').height() + 38).css('width', $(document).width() - boxMargin.Offset - (boxMargin.Margin * 2)).slideDown(); // 38 - Ugly!!!
+    $('#divFilter').css('left', boxMargin).css('top', $('div.header').height() + 38).css('width', $(document).width() - (boxMargin * 2)).slideDown(); // 38 - Ugly!!!
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -504,8 +504,8 @@ function showAbout() {
 
     if ($('#divAbout:visible').length === 0) {
         // Calculate size and position at the page center
-        var docWidth = $(document).width() - boxMargin.Offset,
-            divWidth = Math.min(600, docWidth - boxMargin.Margin),
+        var docWidth = $(document).width(),
+            divWidth = Math.min(600, docWidth - boxMargin),
             divX = (docWidth - divWidth) / 2,
             docHeight = $(document).height(),
             divY = (docHeight / 6);
