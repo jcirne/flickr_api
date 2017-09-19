@@ -4,6 +4,7 @@
 var bSmallScreen = false, // Small screen mode
     dStreamData = null, // All the photo information returned from flickr api
     sLastStream = "", // Last requested stream
+    bLastFilter = false, // Last filter toggle
     iStreamPage = 0, // Stream loading control - current loaded page
     iStreamPerPage = 100, // Stream loading control - number of photos per page
     tStreamTable, // Photo search table object
@@ -48,6 +49,9 @@ function onPageLoad() {
             iTriggerResize--;
             if (iTriggerResize === 0) { // Only called once if many events trigger in a row...
                 verifySmallScreen();
+                if (bLastFilter) {
+                    showFilter();
+                }
             }
         });
     });
@@ -116,7 +120,8 @@ function onPageLoad() {
     tStreamTable = $('#tableStreamTable').DataTable({
         pageLength: 5,
         columnDefs: [
-            { targets: [1, 2, 4], visible: true},
+            { "width": "20%", targets: [1, 2, 4] },
+            { targets: [1, 2, 3, 4], visible: true },
             { targets: '_all', visible: false }
         ],
         dom: 'rftip'
@@ -182,7 +187,7 @@ function smartString(sHtmlText) {
 function verifySmallScreen() {
     var bLastSize = bSmallScreen;
     
-    bSmallScreen = $(document).width() < 900 || $(document).height() < 700; // Small screen calculation
+    bSmallScreen = $(document).width() < 900 || $(document).height() < 400; // Small screen calculation
     if (bSmallScreen != bLastSize) {
         if (bSmallScreen) {
             $('#labelStream,#labelFilter').hide();
@@ -190,6 +195,9 @@ function verifySmallScreen() {
         else {
             $('#labelStream,#labelFilter').show();
         }
+        tStreamTable.column(2).visible(!bSmallScreen);
+        tStreamTable.column(3).visible(!bSmallScreen);
+        tStreamTable.column(4).visible(!bSmallScreen);
         buildSlider();
     }
     else {
@@ -221,7 +229,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', boxMargin).css('top', $('div.header').height() + 38).css('width', $(document).width() - (boxMargin * 2)).slideDown(); // 38 - Ugly!!!
+    $('#divFilter').css('left', boxMargin).css('top', $('div.header').outerHeight(true) + boxMargin).css('width', $(document).width() - (boxMargin * 2)).slideDown();
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -240,11 +248,12 @@ function hideFilter(bInstant) {
 
 function toggleFilter() {
 
-    if ($('#divFilter:visible').length != 0) {
-        hideFilter();
+    bLastFilter = $('#divFilter:visible').length === 0;
+    if (bLastFilter) {
+        showFilter();
     }
     else {
-        showFilter();
+        hideFilter();
     }
 }
 

@@ -93,11 +93,7 @@ function loadStream(sStream) {
                     $.each(data.photos.photo, function (i, item) {
                         tStreamTable.row.add([
                             item.id,
-                            "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + smartString(preventEmptyTitle(item.title)) + "</span>",
-                            smartString(item.ownername),
-                            smartString(item.description._content),
-                            smartString(item.tags),
-                            item.title,
+                            "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
                             item.ownername,
                             item.description._content,
                             item.tags

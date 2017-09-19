@@ -111,8 +111,8 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <div id="divStreamTable" style="padding-left:1em; padding-right:1em;">
-                            <!-- The stream table header and footer need definitions for the searchable information. The actual table can, and will, have more columns.-->
-                            <table id="tableStreamTable" class="display" cellspacing="0" width="100%">
+                            <!-- The stream table header and footer need a <th> element for the searchable information. The actual table can have more columns but they will not be searchable.-->
+                            <table id="tableStreamTable" class="display" style="width: 100%; table-layout: fixed;" >
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -120,10 +120,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -133,10 +129,6 @@
                                         <th>Owner</th>
                                         <th>Description</th>
                                         <th>Tags</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
                                     </tr>
                                 </tfoot>
                             </table>

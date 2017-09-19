@@ -3,12 +3,15 @@
     /*overflow: hidden;*/
 }
 
-td {
-    overflow: hidden;
+table tr {
+        cursor: pointer;
 }
 
-tbody tr {
-    cursor: pointer;
+table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
 }
 
 div.header {
