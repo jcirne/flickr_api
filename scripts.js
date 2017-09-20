@@ -67,6 +67,8 @@ function onPageLoad() {
 
     // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
     $('#divDetail').bind('wheel mousewheel DOMMouseScroll', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         iTriggerWheel++;
         setTimeout(function () {
             iTriggerWheel--;
@@ -77,6 +79,8 @@ function onPageLoad() {
     });
     // Set slider mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
     $('#divImages').bind('wheel mousewheel DOMMouseScroll', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         if (oSlider != null) {
             iTriggerWheel++;
             setTimeout(function () {
@@ -197,10 +201,13 @@ function smartString(sHtmlText) {
 function verifySmallScreen() {
     var bLastSize = bSmallScreen;
     
-    bSmallScreen = $(document).width() < 900 || $(document).height() < 400; // Small screen calculation
+    bSmallScreen = $(document).width() < 800 || $(document).height() < 400; // Small screen calculation
     if (bSmallScreen != bLastSize) {
         if (bSmallScreen) {
             $('#labelStream,#labelFilter').hide();
+            if (!bDetailAttached) {
+                toggleAttach();
+            }
         }
         else {
             $('#labelStream,#labelFilter').show();
