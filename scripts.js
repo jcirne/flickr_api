@@ -16,6 +16,7 @@ var bSmallScreen = false, // Small screen mode
     iNewDetailSize = 0, // Intended detail size
     bDetailAttached = false, // Photo detail state - Attached to page
     dragDif = { X: 0, Y: 0 },
+    lastWindowSize,
     boxMargin = 20;
 
 
@@ -39,12 +40,20 @@ function onPageLoad() {
 
     // Window resize event
     $(window).resize(function () {
+        var width = $(document).width(),
+            height = $(document).height();
+
         iTriggerResize++;
         if (iTriggerResize === 1) { // Close all boxes
             hideDetail(true);
             hideAbout(true);
+        }
+        if (width != lastWindowSize.width) {
             hideFilter(true);
         }
+        lastWindowSize.width = width;
+        lastWindowSize.height = height;
+
         setTimeout(function () {
             iTriggerResize--;
             if (iTriggerResize === 0) { // Only called once if many events trigger in a row...
@@ -136,6 +145,7 @@ function onPageLoad() {
     });
 
     // Screen size verification
+    lastWindowSize = { width: $(document).width(), height: $(document).height() };
     verifySmallScreen();
     iDetailSize = bSmallScreen ? 6 : 7;
     iNewDetailSize = iDetailSize;
