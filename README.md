@@ -16,8 +16,8 @@ The thumbs in the slider are links to the photo detail. This detail is a minimal
 ## Using the app
 Open the file "index.html" in any modern browser
 
-* This app is responsive and will react accordingly to a window resize. When the screen is/becomes very small, further adaptations are made like reducing the thumbnails size on the slider and hidding some labels
-* Esc key will close any opened boxes (About, Detail or Search table)
+* This app is responsive and will react accordingly to a window resize. When the screen is/becomes very small, like on mobile devices, further adaptations are made like reducing the thumbnails size on the slider and hidding some labels
+* Esc key will close the about ou search boxes, and pin the detail box if it was floating
 * Most *ui* elements will show some tooltip information
 
 ### Selected stream
@@ -46,7 +46,7 @@ When photo information is visible, it will appear under the image with the autho
 * Double click the photo to find it on the slider
 
 ### Search table
-Clicking on the arrow after the selected stream will show the search table. This table shows the photo title, author name and tags, but has other searchable hidden information like description or complete tag list
+Clicking on the top left arrow icon will toggle the search table. This table shows the photo title and if the screen is big enough, author name, description and tags
 
 On the upper right a search text box exists that will search all the stream images with any text contained in the description, tags, author name or photo title
 

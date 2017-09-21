@@ -30,8 +30,8 @@ function onPageLoad() {
     $(document).keydown(function (event) {
         if (event.keyCode === 27) {
             hideAbout();
-            if (!bDetailAttached) {
-                hideDetail();
+            if (isDetailDetached()) {
+                toggleAttach();
             }
             hideFilter();
             hideThumb();
@@ -48,7 +48,7 @@ function onPageLoad() {
             hideDetail(true);
             hideAbout(true);
         }
-        if (width != lastWindowSize.width) {
+        if (width != lastWindowSize.width) { // Close filter only on width resize
             hideFilter(true);
         }
         lastWindowSize.width = width;
@@ -207,6 +207,7 @@ function verifySmallScreen() {
             $('#labelStream,#labelFilter').hide();
             if (!bDetailAttached) {
                 toggleAttach();
+                hideDetail(true);
             }
         }
         else {
