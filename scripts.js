@@ -141,7 +141,7 @@ function onPageLoad() {
     });
     // DataTable onclick event in rows
     $('#tableStreamTable tbody').on('click', 'tr', function () {
-        hideFilter();
+        toggleFilter();
         oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[0]));
         if (!bDetailAttached) {
             toggleAttach();
