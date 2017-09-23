@@ -366,6 +366,12 @@ function onDetailLoad() {
 
     $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
     $('#imgDetail').removeClass('old');
+    if ($('#divDetail').position().top < boxMargin) {
+        $('#divDetail').css('top', ($('#divDetail').height() / 2) + boxMargin);
+    }
+    if ($('#divDetail').position().left < boxMargin) {
+        $('#divDetail').css('left', ($('#divDetail').width() / 2) + boxMargin);
+    }
 }
 
 function changeDetail(bUp) {
