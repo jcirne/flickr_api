@@ -44,8 +44,7 @@ function onPageLoad() {
             height = $(document).height();
 
         iTriggerResize++;
-        if (iTriggerResize === 1) { // Close all boxes
-            hideDetail(true);
+        if (iTriggerResize === 1) { // First trigger, even if many events trigger in a row...
             hideAbout(true);
         }
         if (width != lastWindowSize.width) { // Close filter only on width resize
@@ -56,7 +55,8 @@ function onPageLoad() {
 
         setTimeout(function () {
             iTriggerResize--;
-            if (iTriggerResize === 0) { // Only called once if many events trigger in a row...
+            if (iTriggerResize === 0) { // Last trigger, if many events trigger in a row...
+                onDetailLoad();
                 verifySmallScreen();
                 if (bLastFilter) {
                     showFilter();
@@ -205,10 +205,6 @@ function verifySmallScreen() {
     if (bSmallScreen != bLastSize) {
         if (bSmallScreen) {
             $('#labelStream,#labelFilter').hide();
-            if (!bDetailAttached) {
-                toggleAttach();
-                hideDetail(true);
-            }
         }
         else {
             $('#labelStream,#labelFilter').show();
