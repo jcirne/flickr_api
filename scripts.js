@@ -228,7 +228,7 @@ function mouseWheelUp(event) {
         return event.originalEvent.wheelDelta > 0; // Chrome and Edge
     }
     else {
-        return event.originalEvent.detail < 0; // Firefox
+        return event.originalEvent.deltaY < 0; // Firefox
     }
 }
 
