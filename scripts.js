@@ -1,23 +1,24 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Global variables
 'use strict';
-var bSmallScreen = false, // Small screen mode
+var oSlider = null, // Photo slider object
     dStreamData = null, // All the photo information returned from flickr api
     sLastStream = "", // Last requested stream
-    bLastFilter = false, // Last filter toggle
+    tStreamTable, // Photo search table object
     iStreamPage = 0, // Stream loading control - current loaded page
     iStreamPerPage = 100, // Stream loading control - number of photos per page
-    tStreamTable, // Photo search table object
-    oSlider = null, // Photo slider object
     iTriggerWheel = 0, // Deal with multiple wheel events
     iTriggerResize = 0, // Deal with multiple resize events
     iTriggerThumb = 0, // Deal with multiple thumb events
     iDetailSize = 0, // Current detail size
     iNewDetailSize = 0, // Intended detail size
-    bDetailAttached = false, // Photo detail state - Attached to page
+    iBoxMargin = 20,
     dragDif = { X: 0, Y: 0 },
-    lastWindowSize,
-    boxMargin = 20;
+    lastWindowSize = { width: 0, height: 0 },
+    bSmallScreen = false, // Small screen mode
+    bLastFilter = false, // Last filter toggle
+    bDetailAttached = false, // Photo detail state - Attached to page
+    bDetailOff = false; // To prevent showing detail on slider drag
 
 
 
@@ -243,7 +244,7 @@ function showFilter() {
     if (isDetailDetached()) {
         toggleAttach();
     }
-    $('#divFilter').css('left', boxMargin).css('top', $('div.header').outerHeight(true) + boxMargin).css('width', $(document).width() - (boxMargin * 2)).slideDown();
+    $('#divFilter').css('left', iBoxMargin).css('top', $('div.header').outerHeight(true) + iBoxMargin).css('width', $(document).width() - (iBoxMargin * 2)).slideDown();
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
     tStreamTable.columns.adjust().draw();
 }
@@ -332,6 +333,8 @@ function buildSlider() {
             pager: false,
             autoWidth: true,
             keyPress: true,
+            onBeforeSlide: function () { bDetailOff = true; },
+            onAfterSlide: function () { setTimeout(function () { bDetailOff = false; }); },
             prevHtml: '<span class="link glyphicon glyphicon-chevron-left" style="font-size: x-large; padding-top: 2px;"></span>',
             nextHtml: '<span class="link glyphicon glyphicon-chevron-right" style="font-size: x-large; padding-top: 2px;"></span>'
         });
@@ -345,7 +348,7 @@ function addToSlider(i, item) {
         .attr('src', bSmallScreen ? item.url_sq : item.url_q)
         .attr('title', item.title)
         .attr('class', "thumb")
-        .attr('onclick', "showDetail('" + item.id + "');")
+        .attr('onclick', "if (!bDetailOff) showDetail('" + item.id + "');")
         .css('width', bSmallScreen ? 75 : 150)
         .css('height', bSmallScreen ? 75 : 150)
         .appendTo($('<li class="lslide"/>').appendTo('#lightSlider')); // Class 'lslide' needs to be added if adding to already existing slide...
@@ -362,11 +365,11 @@ function onDetailLoad() {
 
     $('#divDetailInfo').css('width', $('#imgDetail').width() + 45); // Image size plus adjustments for several ui elements (not very pretty)...
     $('#imgDetail').removeClass('old');
-    if ($('#divDetail').position().top < boxMargin) {
-        $('#divDetail').css('top', ($('#divDetail').height() / 2) + boxMargin);
+    if ($('#divDetail').position().top < iBoxMargin) {
+        $('#divDetail').css('top', ($('#divDetail').height() / 2) + iBoxMargin);
     }
-    if ($('#divDetail').position().left < boxMargin) {
-        $('#divDetail').css('left', ($('#divDetail').width() / 2) + boxMargin);
+    if ($('#divDetail').position().left < iBoxMargin) {
+        $('#divDetail').css('left', ($('#divDetail').width() / 2) + iBoxMargin);
     }
 }
 
@@ -534,7 +537,7 @@ function showAbout() {
     if ($('#divAbout:visible').length === 0) {
         // Calculate size and position at the page center
         var docWidth = $(document).width(),
-            divWidth = Math.min(600, docWidth - boxMargin),
+            divWidth = Math.min(600, docWidth - iBoxMargin),
             divX = (docWidth - divWidth) / 2,
             docHeight = $(document).height(),
             divY = (docHeight / 6);
