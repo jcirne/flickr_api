@@ -12,8 +12,8 @@ var oSlider = null, // Photo slider object
     iTriggerThumb = 0, // Deal with multiple thumb events
     iDetailSize = 0, // Current detail size
     iNewDetailSize = 0, // Intended detail size
-    iBoxMargin = 20,
-    dragDif = { X: 0, Y: 0 },
+    iBoxMargin = 20, // Minimum box distance to document limit 
+    dragDif = { X: 0, Y: 0 }, // Helper for the image detail drag
     lastWindowSize = { width: 0, height: 0 },
     bSmallScreen = false, // Small screen mode
     bLastFilter = false, // Last filter toggle
@@ -142,11 +142,14 @@ function onPageLoad() {
     });
     // DataTable onclick event in rows
     $('#tableStreamTable tbody').on('click', 'tr', function () {
+        var sID = tStreamTable.row(this).data()[0];
+
         toggleFilter();
-        oSlider.goToSlide(showDetail(tStreamTable.row(this).data()[0]));
+        oSlider.goToSlide(showDetail(sID));
         if (!bDetailAttached) {
             toggleAttach();
         }
+        $('img#' + sID).click(); // Seemes redundant because of showDetail above, but solves the issue of image not found
     });
 
     // Screen size verification
@@ -342,13 +345,14 @@ function buildSlider() {
 }
 
 function addToSlider(i, item) {
+    var source = bSmallScreen ? item.url_sq : item.url_q;
 
     $('<img/>')
         .attr('id', item.id)
-        .attr('src', bSmallScreen ? item.url_sq : item.url_q)
+        .attr('src', source ? source : (bSmallScreen ? "imagenotfound_sq.png" : "imagenotfound_q.png"))
         .attr('title', item.title)
         .attr('class', "thumb")
-        .attr('onclick', "if (!bDetailOff) showDetail('" + item.id + "');")
+        .attr('onclick', source ? "if (!bDetailOff) showDetail('" + item.id + "');" : "hideDetail();")
         .css('width', bSmallScreen ? 75 : 150)
         .css('height', bSmallScreen ? 75 : 150)
         .appendTo($('<li class="lslide"/>').appendTo('#lightSlider')); // Class 'lslide' needs to be added if adding to already existing slide...
