@@ -85,6 +85,7 @@ function loadStream(sStream) {
                         // Add photos to slider
                         $.each(data.photos.photo, addToSlider);
                         oSlider.refresh();
+                        updateSliderBar();
                         // Add photos to stream
                         $.merge(dStreamData.photos.photo, data.photos.photo);
                     }

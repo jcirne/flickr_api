@@ -130,3 +130,9 @@ span.link:active:not(.disabled):not(.selected) {
     height: 3px;
     background-color: darkgreen;
 }
+
+#divSliderPosition {
+    position: fixed;
+    height: 3px;
+    background-color: darkorange;
+}

@@ -7,6 +7,8 @@ var oSlider = null, // Photo slider object
     tStreamTable, // Photo search table object
     iStreamPage = 0, // Stream loading control - current loaded page
     iStreamPerPage = 100, // Stream loading control - number of photos per page
+    sliderBar = { count: 0, start: 0 }, // Slider bar info
+    iTriggerLazy = 0, // Deal with multiple Lazy Load events
     iTriggerWheel = 0, // Deal with multiple wheel events
     iTriggerResize = 0, // Deal with multiple resize events
     iTriggerThumb = 0, // Deal with multiple thumb events
@@ -327,6 +329,7 @@ function buildSlider() {
 
     $('#divImages').empty();
     oSlider = null;
+    $('#divSliderBarRow').hide();
     if (dStreamData != null) {
         $('<ul id="lightSlider"/>').appendTo('#divImages');
         $.each(dStreamData.photos.photo, addToSlider); // Add all photos in stream to the slider structure
@@ -336,8 +339,21 @@ function buildSlider() {
             pager: false,
             autoWidth: true,
             keyPress: true,
-            onBeforeSlide: function () { bDetailOff = true; },
-            onAfterSlide: function () { setTimeout(function () { bDetailOff = false; }); },
+            onSliderLoad: lazySlider,
+            onBeforeSlide: function () {
+                bDetailOff = true;
+                $('#divSliderBarRow').css('opacity', 0.3);
+                iTriggerLazy++;
+            },
+            onAfterSlide: function () {
+                iTriggerLazy--;
+                if (iTriggerLazy === 0) { // Only called once if many events trigger in a row...
+                    setTimeout(function () {
+                        bDetailOff = false;
+                    });
+                    lazySlider();
+                }
+            },
             prevHtml: '<span class="link glyphicon glyphicon-chevron-left" style="font-size: x-large; padding-top: 2px;"></span>',
             nextHtml: '<span class="link glyphicon glyphicon-chevron-right" style="font-size: x-large; padding-top: 2px;"></span>'
         });
@@ -346,16 +362,47 @@ function buildSlider() {
 
 function addToSlider(i, item) {
     var source = bSmallScreen ? item.url_sq : item.url_q;
-
+    
     $('<img/>')
         .attr('id', item.id)
-        .attr('src', source ? source : (bSmallScreen ? "imagenotfound_sq.png" : "imagenotfound_q.png"))
+        .attr('data-src', source ? source : (bSmallScreen ? "imagenotfound_sq.png" : "imagenotfound_q.png"))
+        .attr('src', "//:0")
         .attr('title', item.title)
         .attr('class', "thumb")
         .attr('onclick', source ? "if (!bDetailOff) showDetail('" + item.id + "');" : "hideDetail();")
         .css('width', bSmallScreen ? 75 : 150)
         .css('height', bSmallScreen ? 75 : 150)
         .appendTo($('<li class="lslide"/>').appendTo('#lightSlider')); // Class 'lslide' needs to be added if adding to already existing slide...
+}
+
+function lazySlider() {
+    var visible = $('#divImages').width(),
+        go = true;
+    
+    sliderBar = { count: 0, start: 0 };
+    $.each(dStreamData.photos.photo, function (i, item) {
+        var image = $('img#' + item.id);
+
+        if (image.position().left >= 0 && image.position().left <= visible) {
+            image.attr('src', image.attr('data-src'));
+            go = false;
+            sliderBar.count++;
+            if (sliderBar.start === 0) sliderBar.start = i + 1;
+        }
+        else {
+            return go; // Breaks after finishing with the group of visible images
+        }
+    });
+
+    updateSliderBar();
+}
+
+function updateSliderBar() {
+    var iWidth = (sliderBar.count / dStreamData.photos.photo.length) * $('#divImages').width(),
+        iLeft = (((sliderBar.start + sliderBar.count) / dStreamData.photos.photo.length) * $('#divImages').width()) + $('#divSliderOffset').outerWidth();
+
+    $('#divSliderPosition').css('width', iWidth + 'px').css('left', iLeft + 'px');
+    $('#divSliderBarRow').show().css('opacity', 1);;
 }
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
