@@ -23,17 +23,19 @@ Open the file "index.html" in any modern browser
 ### Selected stream
 The default stream starts loading upon opening the app
 
-It uses a lazy load, fetching 100 photos at a time, and updating the stream slider and search table as the photos are loaded as shown on the progress bar
+It uses a lazy load, fetching a few photos at a time, and updating the stream slider and search table as the photos are loaded as shown on the progress bar
 
 Selecting another stream will discard the current one and start loading the new one
 
 ### Slider
-To move the slider use the the mouse wheel, arrow keys, navigation icons or drag on of the photo thumbnails
+The slider shows photos thumbnails that are lazy loaded only when they become visible for the first time 
+
+To move the slider use the the mouse wheel, the slider bar, arrow keys, navigation icons or drag on of the photo thumbnails
 
 Clicking a thumb will open the photo detail box
 
 ### Detail box
-Clean and minimal photo information and higher resolutions are shown here
+Clean, minimal photo information and higher resolutions are shown here
 
 When photo information is visible, it will appear under the image with the author name linking to the author page on flickr and the image title linking to the image page on flickr
 
@@ -61,7 +63,6 @@ The about box is draggable on the title area and can be shown by clicking the qu
 
 ### ToDo(s)
 * Slider Play/Pause
-* Lazy load on hidden image render in the slider
 
 ## Deployment
 Only the four files in the project root are needed to run the app
