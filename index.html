@@ -66,19 +66,18 @@
         <!-- Image stream -->
         <div class="row tops">
             <div class="col-sm-12 text-center">
-                <span id="spanStreamInfo" style="color: grey;"></span>
+                <span id="spanStreamInfo" style="color: grey;"></span> <span id="spanStreamInfoCount" style="color: lightgrey;"></span>
             </div>
         </div>
         <div class="row" style="padding-bottom: 10px;">
-            <div class="col-sm-1"></div>
+            <div id="divImagesOffset" class="col-sm-1"></div>
             <div id="divImages" class="col-sm-10 text-center"></div>
         </div>
         <div id="divSliderBarRow" class="row">
-            <div id="divSliderOffset" class="col-sm-1"></div>
-            <div class="col-sm-10 tops" style="cursor: pointer;">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10 tops" onclick="showSlide(event);" style="cursor: pointer;">
                 <div id="divSliderPosition"></div>
             </div>
-            <div class="col-sm-1"></div>
         </div>
 
 
@@ -91,9 +90,9 @@
                     <div class="form-group">
                         <label id="labelStream" class="control-label" style="padding-right: 10px;">Stream:</label>
                         <select id="selectStream" class="simple-select" title="Chose a different stream">
-                            <option value="flickr.photos.search">All Photos</option>
+                            <!--<option value="flickr.photos.search">All Photos</option>-->
                             <option value="flickr.interestingness.getList" selected>Interesting Photos</option>
-                            <option value="flickr.photos.getPopular">Popular Photos</option>
+                            <!--<option value="flickr.photos.getPopular">Popular Photos</option>-->
                             <option value="flickr.photos.getRecent">Recent Photos</option>
                         </select>
                         <div class="form-horizontal pull-right" onclick="showAbout();" title="About flickr [api]">

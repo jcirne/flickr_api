@@ -104,6 +104,7 @@ function loadStream(sStream) {
                     $('#divProgress').css('width', ((iStreamPage / data.photos.pages) * 100) + '%');
                     if (iStreamPage < data.photos.pages) { // Still loading the stream
                         $('#pStreamInfo').text("Loaded information on " + (iStreamPage * iStreamPerPage) + " photos from " + data.photos.total);
+                        $('#spanStreamInfoCount').text("(" + Math.floor(((iStreamPage * iStreamPerPage) / data.photos.total) * 100) + "%)");
                         setTimeout(function () { loadStream(sStream); });
                     }
                     else {
@@ -131,6 +132,7 @@ function finishStream() {
         $('#pStreamInfo,#spanStreamInfo').text("No photos found on stream");
         tStreamTable.columns.adjust().draw(); // In case older streams with data are still loading
     }
+    $('#spanStreamInfoCount').text("").fadeOut();
     $('#divProgressBarRow').fadeOut();
     $('#divStream').css('cursor', 'default');
 }

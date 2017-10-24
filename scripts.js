@@ -6,7 +6,7 @@ var oSlider = null, // Photo slider object
     sLastStream = "", // Last requested stream
     tStreamTable, // Photo search table object
     iStreamPage = 0, // Stream loading control - current loaded page
-    iStreamPerPage = 100, // Stream loading control - number of photos per page
+    iStreamPerPage = 15, // Stream loading control - number of photos per page
     sliderBar = { count: 0, start: 0 }, // Slider bar info
     iTriggerLazy = 0, // Deal with multiple Lazy Load events
     iTriggerWheel = 0, // Deal with multiple wheel events
@@ -149,7 +149,7 @@ function onPageLoad() {
         toggleFilter();
         oSlider.goToSlide(showDetail(sID));
         if (!bDetailAttached) {
-            toggleAttach();
+            setTimeout(toggleAttach);
         }
         $('img#' + sID).click(); // Seemes redundant because of showDetail above, but solves the issue of image not found
     });
@@ -334,7 +334,6 @@ function buildSlider() {
         $('<ul id="lightSlider"/>').appendTo('#divImages');
         $.each(dStreamData.photos.photo, addToSlider); // Add all photos in stream to the slider structure
         oSlider = $('#lightSlider').lightSlider({
-            slideMove: 2,
             controls: true,
             pager: false,
             autoWidth: true,
@@ -350,8 +349,8 @@ function buildSlider() {
                 if (iTriggerLazy === 0) { // Only called once if many events trigger in a row...
                     setTimeout(function () {
                         bDetailOff = false;
-                    });
-                    lazySlider();
+                        lazySlider();
+                    }, 500);
                 }
             },
             prevHtml: '<span class="link glyphicon glyphicon-chevron-left" style="font-size: x-large; padding-top: 2px;"></span>',
@@ -373,6 +372,13 @@ function addToSlider(i, item) {
         .css('width', bSmallScreen ? 75 : 150)
         .css('height', bSmallScreen ? 75 : 150)
         .appendTo($('<li class="lslide"/>').appendTo('#lightSlider')); // Class 'lslide' needs to be added if adding to already existing slide...
+}
+
+function showSlide(event) {
+    var iLocation = event.pageX - $('#divImagesOffset').outerWidth() - (($('#divImages').outerWidth() - $('#divImages').width()) / 2) - ($('#divSliderPosition').width() / 2),
+        iSlide = (iLocation / $('#divImages').width()) * dStreamData.photos.photo.length;
+
+    oSlider.goToSlide(Math.min(Math.max(iSlide, 0), dStreamData.photos.photo.length - 1));
 }
 
 function lazySlider() {
@@ -398,9 +404,11 @@ function lazySlider() {
 }
 
 function updateSliderBar() {
-    var iWidth = (sliderBar.count / dStreamData.photos.photo.length) * $('#divImages').width(),
-        iLeft = (((sliderBar.start + sliderBar.count) / dStreamData.photos.photo.length) * $('#divImages').width()) + $('#divSliderOffset').outerWidth();
-
+    var iSize = $('#divImages').width(),
+        iOffset = $('#divImagesOffset').outerWidth() + (($('#divImages').outerWidth() - $('#divImages').width()) / 2),
+        iWidth = Math.max((sliderBar.count / dStreamData.photos.photo.length) * iSize, 20),
+        iLeft = Math.min(iOffset + ((Math.max((sliderBar.start - 1), 0) / dStreamData.photos.photo.length) * iSize), iOffset + iSize - iWidth);
+    
     $('#divSliderPosition').css('width', iWidth + 'px').css('left', iLeft + 'px');
     $('#divSliderBarRow').show().css('opacity', 1);;
 }
