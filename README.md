@@ -61,9 +61,6 @@ Shows basic information on this app and has links that open in new tabs to the f
 
 The about box is draggable on the title area and can be shown by clicking the question mark icon or the word "About"
 
-### ToDo(s)
-* Slider Play/Pause
-
 ## Deployment
 Only the four files in the project root are needed to run the app
 

@@ -1,27 +1,4 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-// Stream methods
-
-function getStream(sStream) {
-
-    hideDetail();
-    $('#divImages').empty();
-    $('#divStream').css('cursor', 'wait');
-    $('#pStreamInfo').text("Loading information from stream...");
-    $('#spanStreamInfo').text($('#selectStream > option:selected').text());
-    $('#divProgress').css('width', '0%');
-    $('#divProgressBarRow').fadeIn();
-    dStreamData = null;
-    iStreamPage = 0;
-    tStreamTable.clear();
-    sLastStream = sStream; // Last requested stream
-    loadStream(sStream);
-}
-
-// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-
-
-
-// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // flickr api methods
 
 // Load stream
@@ -76,7 +53,7 @@ function loadStream(sStream) {
         cache: false,
         success: function (data, textStatus, jqXHR) {
             if (data.stat === "ok") {
-                if (sLastStream === sStream) { // Changing the stream while the previous one is still loading will result in old requests finishing. Do nothing in these cases
+                if (sLastStream === sStream) { // Changing the stream while the previous one is still loading will result in old requests finishing. Do nothing in these cases!
                     if (iStreamPage === 1 || dStreamData == null) {
                         dStreamData = data;
                         buildSlider(); // Builds a slider with the first page...
@@ -91,16 +68,9 @@ function loadStream(sStream) {
                     }
 
                     // Add new stream data to search table
-                    $.each(data.photos.photo, function (i, item) {
-                        tStreamTable.row.add([
-                            item.id,
-                            "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
-                            item.ownername,
-                            item.description._content,
-                            item.tags
-                        ]).draw(false);
-                    });
+                    $.each(data.photos.photo, addToStreamTable);
 
+                    // Update load status
                     $('#divProgress').css('width', ((iStreamPage / data.photos.pages) * 100) + '%');
                     if (iStreamPage < data.photos.pages) { // Still loading the stream
                         $('#pStreamInfo').text("Loaded information on " + (iStreamPage * iStreamPerPage) + " photos from " + data.photos.total);
@@ -121,20 +91,6 @@ function loadStream(sStream) {
             finishStream();
         }
     });
-}
-
-function finishStream() {
-
-    if (dStreamData != null) {
-        $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
-    }
-    else {
-        $('#pStreamInfo,#spanStreamInfo').text("No photos found on stream");
-        tStreamTable.columns.adjust().draw(); // In case older streams with data are still loading
-    }
-    $('#spanStreamInfoCount').text("").fadeOut();
-    $('#divProgressBarRow').fadeOut();
-    $('#divStream').css('cursor', 'default');
 }
 
 

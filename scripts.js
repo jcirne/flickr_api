@@ -1,6 +1,7 @@
 ﻿// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-// Global variables
+// Global variables and initial settings
 'use strict';
+
 var oSlider = null, // Photo slider object
     dStreamData = null, // All the photo information returned from flickr api
     sLastStream = "", // Last requested stream
@@ -24,9 +25,6 @@ var oSlider = null, // Photo slider object
 
 
 
-// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-// Initial settings
-
 function onPageLoad() {
 
     // Esc key event
@@ -40,6 +38,7 @@ function onPageLoad() {
             hideThumb();
         }
     });
+
 
     // Window resize event
     $(window).resize(function () {
@@ -68,7 +67,8 @@ function onPageLoad() {
         });
     });
 
-    // Set detail mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
+
+    // Set mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
     $('#divDetail').bind('wheel mousewheel DOMMouseScroll', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -80,7 +80,6 @@ function onPageLoad() {
             }
         });
     });
-    // Set slider mouse wheel behaviour (these events are not standard so some browsers only recognize some of them, and others may trigger several...)
     $('#divImages').bind('wheel mousewheel DOMMouseScroll', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -99,20 +98,23 @@ function onPageLoad() {
             });
         }
     });
- 
+
+
     // Chosen and change event
     $('#selectStream').chosen({
         search_contains: true,
         allow_single_deselect: true,
         width: 150
     }).change(function () {
-        getStream($('#selectStream').val());
+        startStream($('#selectStream').val());
     });
+
 
     // Set image detail load behaviour
     $('#imgDetail').on('load', function () {
         onDetailLoad();
     });
+
 
     // Draggable divs
     $('#divDetail').draggable({ // This div makes special calculations because of the transform property
@@ -132,7 +134,8 @@ function onPageLoad() {
         handle: '#divAboutHead'
     });
 
-    // DataTable creation
+
+    // Stream table creation and onclick event in rows
     tStreamTable = $('#tableStreamTable').DataTable({
         pageLength: 5,
         columnDefs: [
@@ -142,7 +145,6 @@ function onPageLoad() {
         ],
         dom: 'rftip'
     });
-    // DataTable onclick event in rows
     $('#tableStreamTable tbody').on('click', 'tr', function () {
         var sID = tStreamTable.row(this).data()[0];
 
@@ -154,17 +156,17 @@ function onPageLoad() {
         $('img#' + sID).click(); // Seemes redundant because of showDetail above, but solves the issue of image not found
     });
 
+
     // Screen size verification
     lastWindowSize = { width: $(document).width(), height: $(document).height() };
     verifySmallScreen();
     iDetailSize = bSmallScreen ? 6 : 7;
     iNewDetailSize = iDetailSize;
 
-    // Initialize thumb with empty image
-    hideThumb(true);
 
-    // Load default stream
-    getStream($('#selectStream').val());
+    // Initialize thumb with empty image and load default stream
+    hideThumb(true);
+    startStream($('#selectStream').val());
 }
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -242,6 +244,59 @@ function mouseWheelUp(event) {
 
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+// Stream and table functions
+
+function startStream(sStream) {
+
+    hideDetail();
+    $('#divImages').empty();
+    $('#divStream').css('cursor', 'wait');
+    $('#pStreamInfo').text("Loading information from stream...");
+    $('#spanStreamInfo').text($('#selectStream > option:selected').text());
+    $('#divProgress').css('width', '0%');
+    $('#divProgressBarRow').fadeIn();
+    dStreamData = null;
+    iStreamPage = 0;
+    tStreamTable.clear();
+    sLastStream = sStream; // Last requested stream
+    loadStream(sStream);
+}
+
+function finishStream() {
+
+    if (dStreamData != null) {
+        $('#pStreamInfo').text("Information on " + dStreamData.photos.photo.length + " photos loaded");
+    }
+    else {
+        $('#pStreamInfo,#spanStreamInfo').text("No photos found on stream");
+        drawStreamTable(); // In case older streams with data are still loading
+    }
+    $('#spanStreamInfoCount').text("").fadeOut();
+    $('#divProgressBarRow').fadeOut();
+    $('#divStream').css('cursor', 'default');
+}
+
+function addToStreamTable(i, item) {
+
+    tStreamTable.row.add([
+        item.id,
+        "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
+        item.ownername,
+        item.description._content,
+        item.tags
+    ]).draw(false);
+}
+
+function drawStreamTable() {
+
+    tStreamTable.columns.adjust().draw();
+}
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+
+
+// »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 // Filter functions
 
 function showFilter() {
@@ -251,7 +306,7 @@ function showFilter() {
     }
     $('#divFilter').css('left', iBoxMargin).css('top', $('div.header').outerHeight(true) + iBoxMargin).css('width', $(document).width() - (iBoxMargin * 2)).slideDown();
     $('#spanFilterIcon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down').attr("title", "Hide stream filter");
-    tStreamTable.columns.adjust().draw();
+    drawStreamTable();
 }
 
 function hideFilter(bInstant) {
