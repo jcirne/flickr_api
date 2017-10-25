@@ -280,7 +280,12 @@ function addToStreamTable(i, item) {
 
     tStreamTable.row.add([
         item.id,
-        "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' onmouseout='hideThumb(true);' id='thumb_" + item.id + "' data-square-url='" + item.url_sq + "' >" + preventEmptyTitle(item.title) + "</span>",
+        "<span onmousemove='showThumb(event.pageX, event.pageY, " + item.id + ");' " +
+              "onmouseout='hideThumb(true);' " +
+              "id='thumb_" + item.id + "' " +
+              "data-square-url='" + item.url_sq + "' >" +
+            preventEmptyTitle(item.title) +
+        "</span>",
         item.ownername,
         item.description._content,
         item.tags
