@@ -253,6 +253,7 @@ function startStream(sStream) {
     $('#divStream').css('cursor', 'wait');
     $('#pStreamInfo').text("Loading information from stream...");
     $('#spanStreamInfo').text($('#selectStream > option:selected').text());
+    $('#spanStreamInfoCount').show();
     $('#divProgress').css('width', '0%');
     $('#divProgressBarRow').fadeIn();
     dStreamData = null;
