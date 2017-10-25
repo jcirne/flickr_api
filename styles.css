@@ -136,3 +136,9 @@ span.link:active:not(.disabled):not(.selected) {
     height: 3px;
     background-color: darkorange;
 }
+
+#divSliderBar {
+    cursor: pointer;
+    padding-top: 7px; /* compensate height of SliderPosition */
+    padding-bottom: 10px;
+}
