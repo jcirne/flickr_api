@@ -133,15 +133,17 @@ span.link:active:not(.disabled):not(.selected) {
 
 #divSliderPosition {
     position: fixed;
-    height: 4px;
-    background-color: darkorange;
+    height: 5px;
+    border: 1px solid darkorange;
+    border-radius: 3px;
+    background-color: darkorange
 }
 #divSliderPosition:hover:not(.dragging) {
     cursor: grab;
 }
 
 #divSliderBar {
-    padding-top: 6px; /* compensate height of SliderPosition */
+    padding-top: 4px; /* compensate height of SliderPosition */
     padding-bottom: 10px;
 }
 #divSliderBar:hover:not(.dragging) {

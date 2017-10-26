@@ -449,7 +449,7 @@ function addToSlider(i, item) {
 }
 
 function showSlide(event) {
-    var iLocation = event.pageX - $('#divImagesOffset').outerWidth() - (($('#divImages').outerWidth() - $('#divImages').width()) / 2) - ($('#divSliderPosition').width() / 2),
+    var iLocation = event.pageX - $('#divImages').position().left - (($('#divImages').outerWidth() - $('#divImages').width()) / 2) - ($('#divSliderPosition').width() / 2),
         iSlide = (iLocation / $('#divImages').width()) * dStreamData.photos.photo.length;
 
     oSlider.goToSlide(Math.min(Math.max(iSlide, 0), dStreamData.photos.photo.length - 1));
@@ -479,7 +479,7 @@ function lazySlider() {
 
 function updateSliderBar() {
     var iSize = $('#divImages').width(),
-        iOffset = $('#divImagesOffset').outerWidth() + (($('#divImages').outerWidth() - $('#divImages').width()) / 2),
+        iOffset = $('#divImages').position().left + (($('#divImages').outerWidth() - $('#divImages').width()) / 2),
         iWidth = Math.max((sliderBar.count / dStreamData.photos.photo.length) * iSize, 20),
         iLeft = Math.min(iOffset + ((Math.max((sliderBar.start - 1), 0) / dStreamData.photos.photo.length) * iSize), iOffset + iSize - iWidth);
     
