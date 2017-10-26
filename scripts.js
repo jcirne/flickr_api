@@ -133,6 +133,19 @@ function onPageLoad() {
     $('#divAbout').draggable({
         handle: '#divAboutHead'
     });
+    $('#divSliderPosition').draggable({
+        axis: 'x',
+        cursor: "grabbing",
+        start: function () {
+            $('#divSliderPosition,#divSliderBar').addClass('dragging');
+        },
+        drag: function (event, ui) {
+            showSlide(event);
+        },
+        stop: function () {
+            $('#divSliderPosition,#divSliderBar').removeClass('dragging');
+        }
+    });
 
 
     // Stream table creation and onclick event in rows
