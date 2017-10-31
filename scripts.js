@@ -284,6 +284,7 @@ function finishStream() {
     else {
         $('#pStreamInfo,#spanStreamInfo').text("No photos found on stream");
         drawStreamTable(); // In case older streams with data are still loading
+        $('#divSliderBarRow').hide();
     }
     $('#spanStreamInfoCount').text("").fadeOut();
     $('#divProgressBarRow').fadeOut();
@@ -460,10 +461,11 @@ function lazySlider() {
         go = true;
     
     sliderBar = { count: 0, start: 0 };
-    $.each(dStreamData.photos.photo, function (i, item) {
-        var image = $('img#' + item.id);
+    $.each($('li > img'), function (i, item) {
+        var image = $(item),
+            left = image.position().left;
 
-        if (image.position().left >= 0 && image.position().left <= visible) {
+        if (left >= 0 && left <= visible) {
             image.attr('src', image.attr('data-src'));
             go = false;
             sliderBar.count++;
