@@ -386,7 +386,7 @@ function hideThumb(bInstant) {
     else {
         $('#divThumb').fadeOut();
     }
-    $('#imgThumb').attr("src", "//:0").css('width', 75).css('height', 75); // Avoids the previous image appearing when a new thumb is still loading
+    $('#imgThumb').attr("src", "empty_sq.png").css('width', 75).css('height', 75); // Avoids the previous image appearing when a new thumb is still loading
     iTriggerThumb = 0;
 
     return false;
