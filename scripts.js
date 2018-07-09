@@ -440,7 +440,7 @@ function addToSlider(i, item) {
     $('<img/>')
         .attr('id', item.id)
         .attr('data-src', source ? source : (bSmallScreen ? "imagenotfound_sq.png" : "imagenotfound_q.png"))
-        .attr('src', "//:0")
+        .attr('src', bSmallScreen ? "empty_sq.png" : "empty_q.png") // .attr('src', "//:0")
         .attr('title', item.title)
         .attr('class', "thumb")
         .attr('onclick', source ? "if (!bDetailOff) showDetail('" + item.id + "');" : "hideDetail();")
@@ -465,7 +465,7 @@ function lazySlider() {
         var image = $(item),
             left = image.position().left;
 
-        if (left >= 0 && left <= visible) {
+        if (left >= -(bSmallScreen ? 75 : 150) && left <= visible + (bSmallScreen ? 75 : 150)) { 
             image.attr('src', image.attr('data-src'));
             go = false;
             sliderBar.count++;
